@@ -10,7 +10,7 @@ import  cookieParser from 'cookie-parser';
 const app = express();
 const port = 2906;
 app.use(cors({
-     origin:"http://localhost:5173",
+     origin:["http://localhost:5173","https://projectecom-client.vercel.app"],
      methods:["GET","POST","PUT","DELETE","OPTIONS"],
      credentials:true,
 }))
