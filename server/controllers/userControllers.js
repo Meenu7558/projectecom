@@ -25,8 +25,10 @@ export const userSignup = async (req, res, next) => {
       phone: phone,
       profilepic,
     });
-
+    console.log(" User data to save:", userData);
     const savedUser = await userData.save();
+    console.log("✅ Saved user:", savedUser);
+
     const token = generateToken(savedUser._id);
 
     res.cookie("token", token, {
@@ -41,7 +43,7 @@ export const userSignup = async (req, res, next) => {
     return res.json({ data: userObj, message: "User account created" });
 
   } catch (error) {
-    console.error("🔥 Signup Error:", error);
+    console.error("🔥 Signup Error:", error.stack);
     return res.status(error.statusCode || 500).json({
       message: error.message || "Internal server error",
     });
