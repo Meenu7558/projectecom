@@ -47,13 +47,14 @@ export const UserLayout = () => {
 
     return (
         <div>
-            {isUserAuth ? <UserHeader /> : <Navbar />} {/* Conditional rendering based on auth status */}
-
-            <div className="min-h-screen">
-                <Outlet /> {/* Render child routes */}
-            </div>
-
-            <Footer />
+          {/* Show Navbar as default during loading */}
+          {loading ? <Navbar /> : isUserAuth ? <UserHeader /> : <Navbar />}
+      
+          <div className="min-h-screen">
+            {loading ? <div className="text-center py-10">Loading...</div> : <Outlet />}
+          </div>
+      
+          <Footer />
         </div>
-    );
-};
+      );
+    }
