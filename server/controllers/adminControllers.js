@@ -5,6 +5,7 @@ import { User } from "../models/userModel.js";
 import { Seller } from "../models/sellerModel.js";
 import { Order } from "../models/orderModel.js";
 
+const NODE_ENV = process.env.NODE_ENV;
 // Admin Signup
 export const adminSignup = async (req, res, next) => {
   try {
@@ -28,9 +29,9 @@ export const adminSignup = async (req, res, next) => {
     const token = generateToken(adminData._id);
     
     res.cookie("token", token, {
-      httpOnly: true,
-      secure: false, // 👉 change to true in production (with HTTPS)
-      sameSite: "Lax", // or 'None' if cross-site and secure is true
+      sameSite: NODE_ENV === "production" ? "None" : "Lax",
+      secure: NODE_ENV === "production",
+      httpOnly: NODE_ENV === "production",
     });
     
 
@@ -64,9 +65,9 @@ export const adminLogin = async (req, res, next) => {
     const token = generateToken(admin._id);
     
     res.cookie("token", token, {
-      httpOnly: true,
-      secure: false, // 👉 change to true in production (with HTTPS)
-      sameSite: "Lax", // or 'None' if cross-site and secure is true
+      sameSite: NODE_ENV === "production" ? "None" : "Lax",
+      secure: NODE_ENV === "production",
+      httpOnly: NODE_ENV === "production",
     });
     
 

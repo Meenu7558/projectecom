@@ -2,6 +2,7 @@ import Stripe from "stripe";
 import { Order } from "../models/orderModel.js";
 
 const stripe = new Stripe(process.env.STRIPE_PRIVATE_API_KEY);
+
 const client_domain = process.env.CLIENT_DOMAIN;
 
 export const createCheckoutSession = async (req, res) => {

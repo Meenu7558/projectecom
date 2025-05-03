@@ -2,7 +2,7 @@ import {User}  from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/token.js";
 
-
+const NODE_ENV = process.env.NODE_ENV;
 export const userSignup = async (req, res, next) => {
   try {
     console.log("Signup route hit");
@@ -30,9 +30,9 @@ export const userSignup = async (req, res, next) => {
     const token = generateToken(savedUser._id);
 
     res.cookie("token", token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "Lax",
+      sameSite: NODE_ENV === "production" ? "None" : "Lax",
+      secure: NODE_ENV === "production",
+      httpOnly: NODE_ENV === "production",
     });
 
     const userObj = savedUser.toObject();
@@ -87,9 +87,9 @@ export const userLogin = async (req, res, next) => {
 
           
     res.cookie("token", token, {
-      httpOnly: true,
-      secure: false,      
-      sameSite: "Lax",    
+      sameSite: NODE_ENV === "production" ? "None" : "Lax",
+      secure: NODE_ENV === "production",
+      httpOnly: NODE_ENV === "production",
     });
 
 

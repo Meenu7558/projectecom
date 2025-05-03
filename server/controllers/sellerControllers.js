@@ -2,7 +2,7 @@ import {Seller}  from "../models/sellerModel.js";
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/token.js";
 
-
+const NODE_ENV = process.env.NODE_ENV;
 export const sellerSignup = async (req, res, next) => {
   try {
     console.log("Seller signup attempt");
@@ -24,9 +24,9 @@ export const sellerSignup = async (req, res, next) => {
     const token = generateToken(sellerData._id);
     
     res.cookie("token", token, {
-      httpOnly: true,
-      secure: false, // 👉 change to true in production (with HTTPS)
-      sameSite: "Lax", // or 'None' if cross-site and secure is true
+      sameSite: NODE_ENV === "production" ? "None" : "Lax",
+      secure: NODE_ENV === "production",
+      httpOnly: NODE_ENV === "production",
     });
     
     delete sellerData._doc.password;
@@ -59,9 +59,9 @@ export const sellerLogin = async (req, res, next) => {
     const token = generateToken(seller._id);
     
     res.cookie("token", token, {
-      httpOnly: true,
-      secure: false, // 👉 change to true in production (with HTTPS)
-      sameSite: "Lax", // or 'None' if cross-site and secure is true
+      sameSite: NODE_ENV === "production" ? "None" : "Lax",
+      secure: NODE_ENV === "production",
+      httpOnly: NODE_ENV === "production",
     });
     
     delete seller._doc.password;
