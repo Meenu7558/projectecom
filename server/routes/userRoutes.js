@@ -1,6 +1,6 @@
 import e from "express";
 
-import { userProfile, userSignup, userLogin, userLogout, updateUserProfile ,forgotPassword, changePassword,deactivateAccount, checkUser } from "../controllers/userControllers.js";
+import { userProfile, userSignup, userLogin, updateUserProfile ,forgotPassword, changePassword,deactivateAccount, checkUser, userLogout } from "../controllers/userControllers.js";
 import { userAuth } from "../middlewares/userAuth.js";
 
 const router = e.Router();
@@ -15,7 +15,7 @@ router.post('/login', userLogin);
 router.get('/profile', userAuth, userProfile);
 
 // Logout
-router.post('/logout', userAuth, userLogout);
+router.post('/logout', userLogout);
 
 // Profile Update
 router.put('/profile-update', userAuth, updateUserProfile    );
@@ -31,5 +31,7 @@ router.delete('/deactivate', userAuth, deactivateAccount );
 
 // Check User (to check if user exists)
 router.get('/check-user', userAuth, checkUser);
+
+
 
 export { router as userRouter };

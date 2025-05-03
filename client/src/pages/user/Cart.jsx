@@ -68,33 +68,45 @@ export const Cart = () => {
 
     return (
         <>
-            <section>
-                <h1>Cart Page</h1>
-            </section>
-            <section className="flex flex-wrap">
-                <div className="w-full md:w-6/12">
-                    <h2 className="text-2xl font-semibold mb-4">Items in Cart</h2>
-                    {cartDetails?.items?.map((item) => (
-                        <CartCards
-                            item={item}
-                            key={`${item?._id}`} // Unique key based on item._id
-                            handleRemove={handleRemoveCartItem}
-                        />
-                    ))}
-                </div>
-                <div className="w-6/12 px-20 py-20">
-                    {cartDetails?.items?.map((item, index) => (
-                        <h2 key={`${item.productId}-${index}`}>Price: {item?.price}</h2> // Unique key for each price
-                    ))}
-                    <h2>Total Price: {cartDetails?.totalPrice}</h2>
-                    <button
-                        className="btn btn-success mt-20"
-                        onClick={makePayment}
-                    >
-                        Make payment
-                    </button>
-                </div>
-            </section>
+          <section className="text-center my-10">
+            <h1 className="text-4xl font-bold text-pink-600 dark:text-pink-400">Your Cart</h1>
+          </section>
+      
+          <section className="flex flex-wrap justify-between gap-8 px-6">
+            
+            {/* Left Column: Items in Cart */}
+            <div className="w-full md:w-7/12">
+              <h2 className="text-2xl font-semibold mb-6 text-pink-700 dark:text-pink-400">Items in Cart</h2>
+              {cartDetails?.items?.map((item) => (
+                <CartCards
+                  item={item}
+                  key={`${item?._id}`} // Unique key based on item._id
+                  handleRemove={handleRemoveCartItem}
+                />
+              ))}
+            </div>
+      
+            {/* Right Column: Price Details and Payment */}
+            <div className="w-full md:w-5/12 bg-white dark:bg-gray-800 rounded-lg shadow-lg px-8 py-10">
+              <h2 className="text-2xl font-semibold mb-4 text-pink-700 dark:text-pink-400">Price Details</h2>
+              {cartDetails?.items?.map((item, index) => (
+                <h3 key={`${item.productId}-${index}`} className="text-lg font-medium mb-2 text-gray-800 dark:text-gray-300">
+                  {item?.productName} - ${item?.price}
+                </h3>
+              ))}
+              <h2 className="text-xl font-bold mt-4 text-gray-900 dark:text-gray-100">Total Price: ${cartDetails?.totalPrice}</h2>
+      
+              {/* Payment Button */}
+              <button
+                className="btn bg-gradient-to-r from-pink-400 to-pink-600 text-white hover:from-pink-500 hover:to-pink-700 mt-8 w-full py-2 font-semibold dark:bg-pink-600 dark:hover:bg-pink-500"
+                onClick={makePayment}
+              >
+                Make Payment
+              </button>
+            </div>
+      
+          </section>
         </>
-    );
+      );
+      
 }

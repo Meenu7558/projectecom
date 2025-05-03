@@ -1,61 +1,89 @@
 import React, { useState } from "react";
+
+import { useFetch } from "../../hooks/usefetch";
+import { EditProfileForm } from "../../components/user/EditProfileForm";
+import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../config/axioInstance";
 
-import { EditProfileForm } from "../../components/user/EditProfileForm";
-import { useFetch } from "../../hooks/usefetch";
 
 
 export const Profile = () => {
-    const [profileData, isLoading, error] = useFetch("/user/profile");
-    const [isProfileEdit, setisProfileEdit] = useState(false);
+  const [profileData, isLoading, error] = useFetch("/user/profile");
+  const [isProfileEdit, setisProfileEdit] = useState(false);
+  const navigate = useNavigate();
 
-    const handleLogOut = async () => {
-        try {
-            const response = await axiosInstance({
-                method: "GET",
-                url: "/user/logout",
-            });
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    return (
-        <div className="max-w-3xl mx-auto p-6 space-y-8">
-          {/* Action Buttons */}
-          <section className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="btn btn-primary w-full sm:w-auto">Orders</button>
+  const handleLogOut = async () => {
+    try {
+      // Send a POST request to the logout endpoint
+      const response = await axiosInstance({
+        method: "POST",
+        url: "/user/logout",
+        withCredentials: true, // Ensure cookies are included in the request
+      });
+      console.log("Logout successful:", response.data);
+      navigate("/"); // Redirect to home page or login after logout
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+  
+  return (
+    <div className="max-w-4xl mx-auto p-6 space-y-8">
+      {/* Header + Buttons */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+          <div className="text-center sm:text-left">
+            <h1 className="text-3xl font-bold text-pink-600 dark:text-pink-400">
+              Welcome, {profileData?.name || "Loading..."}
+            </h1>
+            <p className="text-gray-600 dark:text-gray-300">{profileData?.email || "Loading..."}</p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button className="btn bg-pink-500 text-white hover:bg-pink-600">
+              Orders
+            </button>
             <button
-              className="btn btn-secondary w-full sm:w-auto"
+              className="btn bg-pink-200 text-pink-900 hover:bg-pink-300 dark:bg-pink-600 dark:text-white dark:hover:bg-pink-500"
               onClick={() => setisProfileEdit(!isProfileEdit)}
             >
               {isProfileEdit ? 'Cancel Edit' : 'Edit Profile'}
             </button>
-            <button className="btn btn-accent w-full sm:w-auto" onClick={handleLogOut}>
+            <button
+              className="btn bg-red-500 text-white hover:bg-red-600"
+              onClick={handleLogOut}
+            >
               Logout
             </button>
-          </section>
-      
-          {/* Edit Profile Form */}
-          {isProfileEdit && (
-            <section className="border p-6 rounded-lg shadow-md bg-gray-50">
-              <EditProfileForm />
-            </section>
-          )}
-      
-          {/* Profile Details */}
-          <section className="text-center space-y-4">
-            <div className="flex justify-center">
-              <img
-                src={profileData?.profilePic}
-                className="w-40 h-40 rounded-full object-cover shadow-lg"
-                alt="Profile"
-              />
-            </div>
-            <h1 className="text-2xl font-semibold">{profileData?.name}</h1>
-            <p className="text-gray-600">Email: {profileData?.email}</p>
-            <p className="text-gray-600">Mobile: {profileData?.mobile}</p>
-          </section>
+          </div>
         </div>
-      );
-    }
+      </div>
+
+      {/* Edit Form */}
+      {isProfileEdit && (
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <EditProfileForm />
+        </div>
+      )}
+
+      {/* Profile Details Card */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 text-center space-y-4">
+        <div className="flex justify-center">
+          <img
+            src={profileData?.profilePic || "/default-profile-pic.jpg"}
+            alt="Profile"
+            className="w-32 h-32 rounded-full object-cover border-4 border-pink-400 shadow"
+          />
+        </div>
+        <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
+          {profileData?.name || "No Name Available"}
+        </h2>
+        <p className="text-gray-600 dark:text-gray-300">
+          Email: {profileData?.email || "No Email Available"}
+        </p>
+        <p className="text-gray-600 dark:text-gray-300">
+          Mobile: {profileData?.mobile || "No Mobile Available"}
+        </p>
+      </div>
+    </div>
+  );
+};

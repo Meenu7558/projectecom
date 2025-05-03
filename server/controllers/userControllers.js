@@ -104,6 +104,9 @@ export const userLogin = async (req, res, next) => {
       };
       
         
+
+
+
       export const userProfile = async (req,res,next) =>{
         try {
 
@@ -122,9 +125,33 @@ export const userLogin = async (req, res, next) => {
         
         
         };
-        export const userLogout = (req, res) => {
-          res.status(200).json({ message: "Logout successful" });
+
+
+        
+
+      export const userLogout = async (req, res) => {
+        try {
+          console.log("Logout attempt received"); // Log when logout is triggered
+          res.clearCookie("token", {
+            sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+            secure: process.env.NODE_ENV === "production",
+            httpOnly: true,
+          });
+      
+          return res.status(200).json({ message: "Logout successful" });
+        } catch (error) {
+          console.error("Error during logout:", error); // Log any errors
+          return res.status(500).json({ message: "Logout failed", error: error.message });
+        }
       };
+      
+      
+
+
+
+
+
+
 
       export const updateUserProfile = async (req, res) => {
         try {
@@ -140,6 +167,9 @@ export const userLogin = async (req, res, next) => {
             res.status(500).json({ message: "Server error", error });
         }
     };
+
+
+
 
     export const forgotPassword = async (req, res) => {
       try
