@@ -227,21 +227,22 @@ export const deactivateAccount = async (req, res) => {
 
 export const checkUser = async (req, res) => {
   try {
-    console.log("Checking user with ID:", req.user.id); 
+      console.log("Checking user with ID:", req.user.id);  // Log the ID from the token
 
-    const user = await User.findById(req.user.id).select("-password");
+      // Look up user by the ID that was added to req.user
+      const user = await User.findById(req.user.id).select("-password");
 
-    if (!user) {
-      console.log("User not found in DB");
-      return res.status(404).json({ message: "User not found" });
-    }
+      if (!user) {
+          console.log("User not found in DB");
+          return res.status(404).json({ message: "User not found" });
+      }
 
-    console.log("User found:", user);
+      console.log("User found:", user);
 
-    res.status(200).json(user);
+      // Respond with user data (excluding password)
+      res.status(200).json(user);
   } catch (error) {
-    console.log("❌ Error in checkUser:", error.message);
-    res.status(500).json({ message: "Server error", error: error.message });
+      console.log("❌ Error in checkUser:", error.message);
+      res.status(500).json({ message: "Server error", error: error.message });
   }
 };
-          

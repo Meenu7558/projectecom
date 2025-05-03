@@ -34,6 +34,9 @@ export const UserLayout = () => {
         }
     };
 
+    
+    
+    
     useEffect(() => {
         checkUser();
     }, [location.pathname]); // Re-run when the location changes
