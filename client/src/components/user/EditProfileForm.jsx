@@ -1,12 +1,20 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 
-export const EditProfileForm = () => {
-  const { register, handleSubmit } = useForm();
+export const EditProfileForm = ({ setisProfileEdit, initialProfileData }) => {
+  const { register, handleSubmit } = useForm({
+    defaultValues: {
+      name: initialProfileData?.name,
+      email: initialProfileData?.email,
+      mobile: initialProfileData?.mobile,
+    },
+  });
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log("Updated Profile:", data);
-    // You can connect this with your backend using axiosInstance
+    // Logic to update the profile
+    // After successful update, close the edit form
+    setisProfileEdit(false);
   };
 
   return (

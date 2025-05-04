@@ -22,9 +22,10 @@ export const AdminHeader = () => {
   return (
     <header className="w-full bg-white dark:bg-gray-900 text-gray-800 dark:text-white shadow-md fixed top-0 z-50">
       <nav className="max-w-screen-2xl mx-auto px-6 py-4 flex justify-between items-center">
-        {/* Logo */}
+        
+        {/* ✅ Updated Logo to redirect to /admin/home */}
         <div className="text-2xl font-bold text-pink-500">
-          <Link to="/admin/dashboard">
+          <Link to="/admin/home">
             Pretty<span className="text-gray-800 dark:text-white">Admin</span>
           </Link>
         </div>
@@ -40,7 +41,8 @@ export const AdminHeader = () => {
           </div>
         ) : (
           <nav className="flex gap-6 items-center font-medium">
-            <Link to="/admin/dashboard" className="hover:text-pink-500 transition">
+            {/* ✅ Updated Dashboard link to /admin/home */}
+            <Link to="/admin/home" className="hover:text-pink-500 transition">
               Dashboard
             </Link>
             <Link to="/admin/products" className="hover:text-pink-500 transition">
@@ -58,6 +60,14 @@ export const AdminHeader = () => {
             >
               Logout
             </button>
+
+            {/* Optional: Show logged-in admin */}
+            {user?.name && (
+              <span className="text-sm text-gray-500 dark:text-gray-300">
+                Welcome, {user.name}
+              </span>
+            )}
+
             <DarkMode />
           </nav>
         )}

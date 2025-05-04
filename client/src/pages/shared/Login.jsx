@@ -19,11 +19,12 @@ import { clearUser, saveUser } from '../../redux/features/userSlice';
     signupRoute: "/signup",
 };
 
-if (role == "admin") {
-    user.role = "admin";
-    user.loginAPI = "/admin/login";
-    (user.profileRoute = "/admin/profile"),
-     (user.signupRoute = "/admin/signup");
+if (role === "admin") {
+  user.role = "admin";
+  user.loginAPI = "/admin/login";
+  user.profileRoute = "/admin/profile";  // Keep profile route for admin
+  user.signupRoute = "/admin/signup";
+  user.homeRoute = "/admin/home";  // Add home route for admin
 }
 
 const onSubmit = async (data) => {
@@ -35,19 +36,24 @@ const onSubmit = async (data) => {
         withCredentials: true,
       });
       
-        
-        console.log("response====", response);
-        dispatch(saveUser(response?.data?.data));
-        toast.success("Login success");
-        navigate(user.profileRoute);
-      } catch (error) {
-           dispatch(clearUser());
-            toast.error("Login Failed");
-            console.log(error);
-        
-    }
-}; 
+      console.log("response====", response);
+      dispatch(saveUser(response?.data?.data));
+      toast.success("Login success");
 
+      // Redirect based on role
+      if (user.role === "admin") {
+        navigate(user.homeRoute); // Redirect admin to /admin/home
+      } else {
+        navigate(user.profileRoute); // Redirect regular user to /user/profile
+      }
+    } catch (error) {
+      dispatch(clearUser());
+      toast.error("Login Failed");
+      console.log(error);
+    }
+  };
+
+       
 return (
     <div className="hero min-h-screen bg-gradient-to-br from-pink-100 via-pink-300 to-pink-500">
       <div className="hero-content flex-col lg:flex-row-reverse">

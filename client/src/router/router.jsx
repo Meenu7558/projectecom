@@ -1,4 +1,6 @@
 import {createBrowserRouter} from "react-router-dom";
+import { Navigate } from 'react-router-dom';
+
 import Home from "../pages/user/home/Home";
 import Contact from "../pages/user/Contact";
 import About from "../pages/user/About";
@@ -26,6 +28,7 @@ import ProtectedRouteSeller from "./SellerProtected";
 import SellerDashboard from "../pages/seller/SellerDashboard";
 import ManageProduct from "../pages/seller/ManageProduct";
 import { Shop } from "../pages/user/Shop";
+import AdminHome from "../pages/admin/admindisplay";
 
 
 
@@ -105,12 +108,20 @@ export const router = createBrowserRouter([
     errorElement: <ErrorPage role="admin" />,
     children: [
       {
+        index: true, 
+        element: <Navigate to="home" />,
+      },
+      {
         path: "login",
         element: <Login role="admin" />,
       },
       {
         path: "signup",
         element: <Signup role="admin" />,
+      },
+      {
+        path: "home",
+        element: <AdminHome />,
       },
       {
         path: "dashboard",

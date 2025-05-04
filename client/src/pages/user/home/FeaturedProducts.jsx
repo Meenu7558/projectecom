@@ -74,7 +74,7 @@ const FeaturedProducts = () => {
                 {product.description}
               </p>
               <button className="mt-4 w-full bg-pink-500 hover:bg-pink-600 text-white py-2 px-4 rounded-lg">
-                View Product
+                40%offer
               </button>
             </div>
           </div>

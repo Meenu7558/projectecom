@@ -1,11 +1,8 @@
 import React, { useState } from "react";
-
 import { useFetch } from "../../hooks/usefetch";
 import { EditProfileForm } from "../../components/user/EditProfileForm";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../config/axioInstance";
-
-
 
 export const Profile = () => {
   const [profileData, isLoading, error] = useFetch("/user/profile");
@@ -26,7 +23,15 @@ export const Profile = () => {
       console.error("Logout failed:", error);
     }
   };
-  
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading profile</div>;
+  }
+
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-8">
       {/* Header + Buttons */}
@@ -61,7 +66,10 @@ export const Profile = () => {
       {/* Edit Form */}
       {isProfileEdit && (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <EditProfileForm />
+          <EditProfileForm 
+            setisProfileEdit={setisProfileEdit} 
+            initialProfileData={profileData} 
+          />
         </div>
       )}
 

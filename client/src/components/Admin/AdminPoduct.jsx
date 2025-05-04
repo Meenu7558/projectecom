@@ -65,66 +65,86 @@ const AdminProduct = ({ setRefresh }) => {
       setIsSubmitting(false);
     }
   };
-
   return (
-    <form onSubmit={handleAddProduct} className="mb-10 bg-white p-6 rounded shadow-md">
-      <h3 className="text-xl font-semibold mb-4">Add New Product</h3>
-      <input
-        type="text"
-        placeholder="Name"
-        className="block w-full border p-2 mb-3"
-        value={formData.name || ""} // Make sure value is never undefined
-        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-        required
-      />
-      <textarea
-        placeholder="Description"
-        className="block w-full border p-2 mb-3"
-        value={formData.description || ""} // Make sure value is never undefined
-        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-        required
-      />
-      <input
-        type="number"
-        placeholder="Price"
-        className="block w-full border p-2 mb-3"
-        value={formData.price || ""} // Make sure value is never undefined
-        onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-        required
-        min="0"
-      />
-      <input
-        type="text"
-        placeholder="Category"
-        className="block w-full border p-2 mb-3"
-        value={formData.category || ""} // Make sure value is never undefined
-        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-        required
-      />
-      <input
-        type="number"
-        placeholder="Stock"
-        className="block w-full border p-2 mb-3"
-        value={formData.stock || ""} // Make sure value is never undefined
-        onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
-        required
-        min="1"
-      />
-      <input
-        type="file"
-        className="block mb-4"
-        onChange={(e) => setFormData({ ...formData, image: e.target.files[0] })}
-        required
-      />
+    <form
+      onSubmit={handleAddProduct}
+      className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl mb-10 transition-all"
+    >
+      <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Add New Product</h3>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Product Name</label>
+          <input
+            type="text"
+            className="input"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category</label>
+          <input
+            type="text"
+            className="input"
+            value={formData.category}
+            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Price (₹)</label>
+          <input
+            type="number"
+            className="input"
+            min="0"
+            value={formData.price}
+            onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Stock</label>
+          <input
+            type="number"
+            className="input"
+            min="1"
+            value={formData.stock}
+            onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
+          />
+        </div>
+
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
+          <textarea
+            rows="3"
+            className="input"
+            value={formData.description}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          />
+        </div>
+
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Image</label>
+          <input
+            type="file"
+            className="w-full file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pink-100 file:text-pink-700 hover:file:bg-pink-200"
+            onChange={(e) => setFormData({ ...formData, image: e.target.files[0] })}
+          />
+        </div>
+      </div>
+
       <button
         type="submit"
-        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
         disabled={isSubmitting}
+        className="mt-6 w-full bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 px-6 rounded-lg transition"
       >
-        {isSubmitting ? "Adding..." : "Add Product"}
+        {isSubmitting ? "Adding Product..." : "Add Product"}
       </button>
     </form>
   );
+  
 };
 
 export default AdminProduct;
