@@ -29,6 +29,7 @@ import SellerDashboard from "../pages/seller/SellerDashboard";
 import ManageProduct from "../pages/seller/ManageProduct";
 import { Shop } from "../pages/user/Shop";
 import AdminHome from "../pages/admin/Admindisplay";
+import OrderDetails from "../pages/user/OrderDetails";
 
 
 
@@ -92,7 +93,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "orders",
-            element: <h1>OrderDetails</h1>,
+            element: <OrderDetails/>,
           },
           {
             path: "payment/success",

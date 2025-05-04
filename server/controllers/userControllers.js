@@ -1,4 +1,5 @@
 import {User}  from "../models/userModel.js";
+import { Order } from "../models/orderModel.js";
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/token.js";
 
@@ -276,5 +277,14 @@ export const checkUser = async (req, res) => {
   } catch (error) {
       console.log("❌ Error in checkUser:", error.message);
       res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+export const getUserOrders = async (req, res) => {
+  try {
+    const orders = await Order.find({ userId: req.user.id });
+    res.status(200).json({ orders });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch user orders" });
   }
 };

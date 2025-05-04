@@ -14,7 +14,7 @@ const ContactUs = () => {
         <div className="grid md:grid-cols-3 gap-6">
           <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md hover:shadow-lg transition">
             <h2 className="text-xl font-semibold text-pink-500 mb-2">📧 Email</h2>
-            <p>support@glowandgrace.com</p>
+            <p>support@prettypink.com</p>
           </div>
 
           <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md hover:shadow-lg transition">
@@ -25,7 +25,7 @@ const ContactUs = () => {
           <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md hover:shadow-lg transition">
             <h2 className="text-xl font-semibold text-pink-500 mb-2">🏢 Address</h2>
             <p>
-              Glow & Grace Beauty Pvt Ltd<br />
+              pretty pink Pvt Ltd<br />
               3rd Floor, Rose Building<br />
               MG Road, Kochi, Kerala – 682001
             </p>

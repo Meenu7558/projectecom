@@ -40,15 +40,13 @@ export const UserHeader = () => {
             <i className="ri-search-line"></i>
           </Link>
 
+          
           <button
             onClick={() => navigate('/user/cart')}
-            className="relative hover:text-pink-500 dark:hover:text-pink-400 transition"
-          >
-            <i className="ri-shopping-bag-line"></i>
-            <sup className="absolute -top-2 -right-2 text-xs bg-pink-500 text-white rounded-full px-1.5">
-              2
-            </sup>
-          </button>
+           className="hover:text-pink-500 dark:hover:text-pink-400 transition"
+>
+  <i className="ri-shopping-bag-line text-xl"></i>
+</button>
 
           <Link to="/login" className="hover:text-pink-500 dark:hover:text-pink-400 transition">
             <i className="ri-user-line"></i>

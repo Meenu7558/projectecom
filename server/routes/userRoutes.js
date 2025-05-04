@@ -1,6 +1,6 @@
 import e from "express";
 
-import { userProfile, userSignup, userLogin, updateUserProfile ,forgotPassword, changePassword,deactivateAccount, checkUser, userLogout } from "../controllers/userControllers.js";
+import { userProfile, userSignup, userLogin, updateUserProfile ,forgotPassword, changePassword,deactivateAccount, checkUser, userLogout, getUserOrders } from "../controllers/userControllers.js";
 import { userAuth } from "../middlewares/userAuth.js";
 
 const router = e.Router();
@@ -32,6 +32,7 @@ router.delete('/deactivate', userAuth, deactivateAccount );
 // Check User (to check if user exists)
 router.get('/check-user', userAuth, checkUser);
 
+router.get("/user-orders", userAuth, getUserOrders);
 
 
 export { router as userRouter };

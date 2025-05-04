@@ -9,6 +9,12 @@ export const Profile = () => {
   const [profileData, isLoading, error] = useFetch("/user/profile");
   const [isProfileEdit, setisProfileEdit] = useState(false);
   const navigate = useNavigate();
+  const handleOrdersClick = () => {
+    // Navigate to orders page
+    navigate("/user/orders"); // 
+  };
+  
+
 
   const handleLogOut = async () => {
     try {
