@@ -28,7 +28,7 @@ import ProtectedRouteSeller from "./SellerProtected";
 import SellerDashboard from "../pages/seller/SellerDashboard";
 import ManageProduct from "../pages/seller/ManageProduct";
 import { Shop } from "../pages/user/Shop";
-import AdminHome from "../pages/admin/admindisplay";
+import AdminHome from "../pages/admin/Admindisplay";
 
 
 
@@ -92,7 +92,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "orders",
-            element: <h1>orders page</h1>,
+            element: <h1>OrderDetails</h1>,
           },
           {
             path: "payment/success",
@@ -123,6 +123,8 @@ export const router = createBrowserRouter([
         path: "home",
         element: <AdminHome />,
       },
+
+
       {
         path: "dashboard",
         element: <Dashboard />, // Admin dashboard

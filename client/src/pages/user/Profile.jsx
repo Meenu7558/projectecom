@@ -4,6 +4,7 @@ import { EditProfileForm } from "../../components/user/EditProfileForm";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../config/axioInstance";
 
+
 export const Profile = () => {
   const [profileData, isLoading, error] = useFetch("/user/profile");
   const [isProfileEdit, setisProfileEdit] = useState(false);
@@ -43,10 +44,22 @@ export const Profile = () => {
             </h1>
             <p className="text-gray-600 dark:text-gray-300">{profileData?.email || "Loading..."}</p>
           </div>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <button className="btn bg-pink-500 text-white hover:bg-pink-600">
-              Orders
-            </button>
+
+
+
+
+            <div className="flex flex-col sm:flex-row gap-3">
+      <button
+        className="btn bg-pink-500 text-white hover:bg-pink-600"
+        onClick={handleOrdersClick} // On click, navigate to orders page
+      >
+        Orders
+      </button>
+    
+
+
+
+
             <button
               className="btn bg-pink-200 text-pink-900 hover:bg-pink-300 dark:bg-pink-600 dark:text-white dark:hover:bg-pink-500"
               onClick={() => setisProfileEdit(!isProfileEdit)}
