@@ -9,7 +9,7 @@ const FeaturedProducts = () => {
   useEffect(() => {
     const fetchFeatured = async () => {
       try {
-        const { data } = await axiosInstance.get("/products/featured");
+        const { data } = await axiosInstance.get("/product/featured");
         setProducts(data.data);
       } catch (err) {
         console.error("Failed to fetch featured products", err);

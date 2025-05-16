@@ -30,7 +30,7 @@ export const ShopCards = ({ product }) => {
         <p className="text-xl font-bold text-pink-600 dark:text-pink-400">
           Price: ₹{product?.price || "N/A"}
         </p>
-        <p className="text-sm text-gray-600 dark:text-gray-300">{product?.description}</p>
+        
         <div className="card-actions mt-4 flex justify-center">
           <button
             className="btn btn-primary bg-pink-600 hover:bg-pink-800 text-white dark:bg-pink-500 dark:hover:bg-pink-700"

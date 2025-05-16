@@ -61,7 +61,7 @@ const AdminProduct = ({ setRefresh, editProduct = null, setEditProduct }) => {
 
       let response;
       if (editProduct) {
-        response = await axiosInstance.put(`/productsupdate/${editProduct._id}`, data, {
+        response = await axiosInstance.put(`/product/productsupdate/${editProduct._id}`, data, {
           headers: { "Content-Type": "multipart/form-data" },
         });
       } else {
