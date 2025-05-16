@@ -7,6 +7,14 @@ export const ShopCards = ({ product }) => {
 
   return (
     <div className="card bg-base-100 w-96 shadow-lg hover:shadow-xl transition-all duration-300 mx-auto mb-8">
+      
+      {product?.featured && (
+        <div className="absolute top-2 left-2 bg-pink-600 text-white text-xs font-semibold px-2 py-1 rounded-full z-10 shadow-md">
+          Featured
+        </div>
+      )}
+
+
       <figure>
         {/* Fallback image if product image is missing */}
         <img 

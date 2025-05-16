@@ -5,7 +5,8 @@ dotenv.config();
 
 export const getProducts = async (req, res) => {
   try {
-    const productList = await Product.find().select("-description");
+    const productList = await Product.find();
+
     
     console.log("productList ===>", productList);
 
@@ -30,7 +31,7 @@ export const getProductDetails = async (req, res) => {
 
 export const createProduct = async (req, res) => {
   try {
-    const { name, description, price, category, stock, seller } = req.body;
+    const { name, description, price, category, stock, seller, featured} = req.body;
 
     if (!name || !description || !price || !category || !stock || !req.file) {
       return res.status(400).json({ message: "All fields including image are required" });
@@ -55,6 +56,7 @@ export const createProduct = async (req, res) => {
         public_id: result.public_id,
         url: result.secure_url,
       },
+      featured: featured === "true", 
     });
 
     await product.save();
@@ -67,8 +69,8 @@ export const createProduct = async (req, res) => {
 export const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description, price, category, stock, seller } = req.body;
-
+    const { name, description, price, category, stock, seller,featured } = req.body;
+console.log("Received description:", description);
     const product = await Product.findById(id);
     if (!product) return res.status(404).json({ message: "Product not found" });
 
@@ -91,6 +93,7 @@ export const updateProduct = async (req, res) => {
     product.price = price;
     product.category = category;
     product.stock = stock;
+    product.featured = featured === "true" ? true : false;
     product.seller = seller;
 
     const updatedProduct = await product.save();
@@ -114,5 +117,30 @@ export const deleteProduct = async (req, res) => {
     res.json({ success: true, message: "Product deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message || "Internal server error" });
+  }
+};
+export const getFeaturedProducts = async (req, res) => {
+  try {
+    const products = await Product.find({ featured: true }).limit(6); // Adjust limit if needed
+    res.status(200).json({ success: true, data: products });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+// controller/productController.js
+
+export const getProductById = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id).select(
+      "name description price category stock image featured"
+    );
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.json({ success: true, data: product });
+  } catch (error) {
+    res.status(500).json({ message: error.message || "Server error" });
   }
 };

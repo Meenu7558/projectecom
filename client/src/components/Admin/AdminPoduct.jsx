@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { axiosInstance } from "../../config/axioInstance";
+import { useEffect } from "react";
 
-const AdminProduct = ({ setRefresh }) => {
+
+const AdminProduct = ({ setRefresh, editProduct = null, setEditProduct }) => {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -10,20 +12,33 @@ const AdminProduct = ({ setRefresh }) => {
     category: "",
     stock: "",
     image: null,
+    featured: false,
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleAddProduct = async (e) => {
+  useEffect(() => {
+    if (editProduct) {
+      setFormData({
+        name: editProduct.name || "",
+        description: editProduct.description || "",
+        price: editProduct.price || "",
+        category: editProduct.category || "",
+        stock: editProduct.stock || "",
+        image: null,
+        featured: editProduct.featured || false,
+      });
+    }
+  }, [editProduct]);
+
+  const handleAddOrEditProduct = async (e) => {
     e.preventDefault();
 
-    // Simple form validation
-    if (!formData.name || !formData.description || !formData.price || !formData.category || !formData.stock || !formData.image) {
+    if (!formData.name || !formData.description || !formData.price || !formData.category || !formData.stock || (!formData.image && !editProduct)) {
       toast.error("Please fill in all fields");
       return;
     }
 
-    // Ensure price and stock are positive numbers
     if (parseFloat(formData.price) <= 0 || parseInt(formData.stock) <= 0) {
       toast.error("Price and stock should be positive numbers");
       return;
@@ -36,18 +51,28 @@ const AdminProduct = ({ setRefresh }) => {
       data.append("name", formData.name);
       data.append("description", formData.description);
       data.append("price", formData.price);
-      data.append("category", formData.category);  // Added category to FormData
-      data.append("stock", formData.stock);        // Added stock to FormData
-      data.append("image", formData.image);
+      data.append("category", formData.category);
+      data.append("stock", formData.stock);
+      data.append("featured", formData.featured);
 
-      const response = await axiosInstance.post("/product/createproducts", data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      if (formData.image) {
+        data.append("image", formData.image);
+      }
+
+      let response;
+      if (editProduct) {
+        response = await axiosInstance.put(`/productsupdate/${editProduct._id}`, data, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      } else {
+        response = await axiosInstance.post("/product/createproducts", data, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      }
 
       if (response.status === 200) {
-        toast.success("Product added successfully!");
+        toast.success(editProduct ? "Product updated successfully!" : "Product added successfully!");
+
         setFormData({
           name: "",
           description: "",
@@ -55,22 +80,27 @@ const AdminProduct = ({ setRefresh }) => {
           category: "",
           stock: "",
           image: null,
+          featured: false,
         });
-        setRefresh((prev) => !prev); // Refresh the product list
+
+        if (setEditProduct) setEditProduct(null); // ✅ Reset edit mode
+        setRefresh((prev) => !prev);
       }
     } catch (error) {
-      console.error(error);
-      toast.error(error.response?.data?.message || "Failed to add product");
+      toast.error(error.response?.data?.message || "Failed to add/update product");
     } finally {
       setIsSubmitting(false);
     }
   };
+
   return (
     <form
-      onSubmit={handleAddProduct}
+      onSubmit={handleAddOrEditProduct}
       className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl mb-10 transition-all"
     >
-      <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Add New Product</h3>
+      <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+        {editProduct ? "Edit Product" : "Add New Product"}
+      </h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
@@ -118,11 +148,22 @@ const AdminProduct = ({ setRefresh }) => {
         <div className="md:col-span-2">
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
           <textarea
-            rows="3"
-            className="input"
+            className="w-full p-2 rounded border"
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
           />
+        </div>
+
+        <div className="md:col-span-2">
+          <label className="inline-flex items-center mt-4">
+            <input
+              type="checkbox"
+              checked={formData.featured || false}
+              onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
+              className="form-checkbox h-5 w-5 text-pink-600"
+            />
+            <span className="ml-2 text-gray-700 dark:text-gray-300 font-medium">Mark as Featured Product</span>
+          </label>
         </div>
 
         <div className="md:col-span-2">
@@ -132,6 +173,13 @@ const AdminProduct = ({ setRefresh }) => {
             className="w-full file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pink-100 file:text-pink-700 hover:file:bg-pink-200"
             onChange={(e) => setFormData({ ...formData, image: e.target.files[0] })}
           />
+          {editProduct?.image && (
+            <img
+              src={typeof editProduct.image === "string" ? editProduct.image : editProduct.image?.url}
+              alt="Product Preview"
+              className="mt-2 w-24 h-24 object-cover rounded-md"
+            />
+          )}
         </div>
       </div>
 
@@ -140,11 +188,10 @@ const AdminProduct = ({ setRefresh }) => {
         disabled={isSubmitting}
         className="mt-6 w-full bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 px-6 rounded-lg transition"
       >
-        {isSubmitting ? "Adding Product..." : "Add Product"}
+        {isSubmitting ? "Processing..." : editProduct ? "Update Product" : "Add Product"}
       </button>
     </form>
   );
-  
 };
 
 export default AdminProduct;
