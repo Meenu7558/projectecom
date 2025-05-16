@@ -69,6 +69,12 @@ export const createProduct = async (req, res) => {
 export const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
+
+ console.log("Received product id:", id);
+    console.log("Received body:", req.body);
+    console.log("Received file:", req.file);
+
+
     const { name, description, price, category, stock, seller,featured } = req.body;
 console.log("Received description:", description);
     const product = await Product.findById(id);
