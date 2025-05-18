@@ -12,9 +12,11 @@ export const createCheckoutSession = async (req, res) => {
 
     console.log("Received Products:", products);
 
-    if (!products || products.length === 0) {d
+    if (!products || products.length === 0) {
       return res.status(400).json({ message: "No products found for checkout" });
     }
+
+
 
     const lineItems = products.map((product) => {
       const productDetails = product.product;
@@ -50,14 +52,22 @@ export const createCheckoutSession = async (req, res) => {
       cancel_url: `${client_domain}/user/payment/cancel`,
     });
 
-    // Create new order after the session has been created
+ // Store full product data in order
     const newOrder = new Order({
       userId,
       sessionId: session.id,
+      products: products.map((item) => ({
+        product: item.product._id,
+        name: item.product.name,
+        price: item.product.price,
+        quantity: item.quantity,
+        image: item.product.image?.url,
+      })),
+      status: "Pending", // Mark as pending initially
     });
+
     await newOrder.save();
 
-    // Send back the session ID
     res.json({ success: true, sessionId: session.id });
   } catch (error) {
     console.error("Error creating Stripe session:", error);
@@ -70,16 +80,50 @@ export const createCheckoutSession = async (req, res) => {
 export const getSessionStatus = async (req, res) => {
   try {
     const sessionId = req.query.session_id;
+
+    if (!sessionId) {
+      return res.status(400).json({ message: "Session ID is required" });
+    }
+
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
-    console.log("session=====", session);
+    // 1. Find the order by sessionId
+    const order = await Order.findOne({ sessionId });
 
-    res.send({
-      status: session?.status,
-      customer_email: session?.customer_details?.email,
-      session_data: session,
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    // 2. Update order status if payment is completed
+    if (session.payment_status === "paid") {
+      order.status = "Paid";
+      await order.save();
+    }
+
+    res.status(200).json({
+      message: "Session fetched successfully",
+      status: session.payment_status,
+      order,
     });
   } catch (error) {
-    res.status(error?.statusCode || 500).json(error.message || "internal server error");
+    console.error("Error fetching session status:", error);
+    res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
+  }
+};
+
+export const getUserOrders = async (req, res) => {
+  try {
+    console.log("Reached getUserOrders with userId:", req.user.id); // 👈
+
+    const orders = await Order.find({ userId: req.user.id })
+      .populate("products.product")
+      .sort({ createdAt: -1 });
+
+    console.log("Orders fetched:", orders.length); // 👈
+
+    res.status(200).json({ orders });
+  } catch (error) {
+    console.error("Error in getUserOrders:", error); // 👈
+    res.status(500).json({ message: "Failed to fetch orders" });
   }
 };

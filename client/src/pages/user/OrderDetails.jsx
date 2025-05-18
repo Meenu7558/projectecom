@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../config/axioInstance";
 
+
 const OrderDetails = () => {
   const [orderDetails, setOrderDetails] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,7 +19,7 @@ const OrderDetails = () => {
           response = await axiosInstance.get(`/payment/session-status?session_id=${sessionId}`);
           setOrderDetails([response.data.order]); // wrap in array for consistency
         } else {
-          response = await axiosInstance.get("/order/user-orders");
+          response = await axiosInstance.get("/payment/my-orders");
           setOrderDetails(response.data.orders);
         }
       } catch (error) {

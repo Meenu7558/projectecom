@@ -1,6 +1,6 @@
 import express from "express";
 import { userAuth } from "../middlewares/userAuth.js";
-import { createCheckoutSession, getSessionStatus } from "../controllers/paymentController.js"; // Import the controller
+import { createCheckoutSession, getSessionStatus, getUserOrders } from "../controllers/paymentController.js"; // Import the controller
 
 const router = express.Router();
 
@@ -12,6 +12,7 @@ router.post("/create-checkout-session", userAuth, createCheckoutSession);
 // Route to get session status
 router.get('/session-status', getSessionStatus);
   
+router.get("/my-orders", userAuth, getUserOrders);
 
 
 
