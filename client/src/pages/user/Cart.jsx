@@ -4,50 +4,17 @@ import { useFetch } from '../../hooks/usefetch';
 import { CartCards } from '../../components/user/Cards';
 import { axiosInstance } from '../../config/axioInstance';
 import toast from "react-hot-toast";
-import { loadStripe } from "@stripe/stripe-js";
+import { useNavigate } from "react-router-dom";
+
+
 
 export const Cart = () => {
+   const navigate = useNavigate();
     const [refreshState, setRefreshState] = useState(false);
     const [cartDetails, isLoading, error] = useFetch('/cart/getcart', refreshState);
     console.log("cartDetails=== ", cartDetails);
 
-    const makePayment = async () => {
-        try {
-            if (!cartDetails?.items || cartDetails.items.length === 0) {
-                toast.error("No items in cart");
-                return;
-            }
-
-            // Logging cart items before making the request to the backend
-            console.log("Sending cart items to backend:", cartDetails.items);
-
-            // Load Stripe with the public key
-            const stripe = await loadStripe(import.meta.env.VITE_STRIPE_Publishable_key);
-
-            // Send the cart items to the server for payment session creation
-            const session = await axiosInstance({
-                url: "/payment/create-checkout-session",
-                method: "POST",
-                 data: { products: cartDetails.items }
-
-            });
-
-            console.log("Session response:", session);
-
-            // Redirect to Stripe checkout
-            const result = await stripe.redirectToCheckout({
-                sessionId: session.data.sessionId,
-            });
-
-            if (result.error) {
-                toast.error(result.error.message);
-            }
-        } catch (error) {
-            console.error("Error during payment process:", error);
-            toast.error(error?.response?.data?.message || "Payment failed");
-        }
-    };
-
+    
     const handleRemoveCartItem = async (productId) => {
         try {
             const response = await axiosInstance({
@@ -65,6 +32,18 @@ export const Cart = () => {
 
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error loading cart</div>;
+
+
+  const handleCheckout = () => {
+  if (!cartDetails?.items || cartDetails.items.length === 0) {
+    toast.error("No items in cart");
+    return;
+  }
+
+  // Navigate to checkout form with cart data
+  navigate("/user/checkout", { state: { cartData: cartDetails } });
+};
+
 
     return (
         <>
@@ -96,13 +75,15 @@ export const Cart = () => {
               ))}
               <h2 className="text-xl font-bold mt-4 text-gray-900 dark:text-gray-100">Total Price: ${cartDetails?.totalPrice}</h2>
       
-              {/* Payment Button */}
               <button
-                className="btn bg-gradient-to-r from-pink-400 to-pink-600 text-white hover:from-pink-500 hover:to-pink-700 mt-8 w-full py-2 font-semibold dark:bg-pink-600 dark:hover:bg-pink-500"
-                onClick={makePayment}
-              >
-                Make Payment
-              </button>
+  className="btn bg-gradient-to-r from-pink-400 to-pink-600 text-white hover:from-pink-500 hover:to-pink-700 mt-8 w-full py-2 font-semibold dark:bg-pink-600 dark:hover:bg-pink-500"
+  onClick={handleCheckout}
+>
+  Proceed to Checkout
+</button>
+
+
+
             </div>
       
           </section>

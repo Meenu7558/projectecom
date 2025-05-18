@@ -1,36 +1,59 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { axiosInstance } from "../../config/axioInstance";
+
+import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 
-
-const Checkout = ({ products }) => {
-  const [loading, setLoading] = useState(false);
+export const CheckoutForm = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const cartData = location.state?.cartData;
 
-  const handleCheckout = async () => {
-    setLoading(true);
+  const [formData, setFormData] = useState({
+    fullName: '',
+    address: '',
+    city: '',
+    postalCode: '',
+    phone: '',
+  });
 
-    try {
-      const response = await axiosInstance.post("/payment/create-checkout-session", {products });
-      if (response.data.success) {
-        const sessionId = response.data.sessionId;
-        window.location.href = `https://checkout.stripe.com/pay/${sessionId}`; // Redirect to Stripe Checkout page
-      }
-    } catch (error) {
-      console.error("Error in checkout process", error);
-    } finally {
-      setLoading(false);
-    }
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleContinue = () => {
+    // Simple validation
+    if (Object.values(formData).some(value => !value)) {
+      alert("Please fill in all fields");
+      return;
+    }
+
+    // Navigate to payment page with both form and cart data
+    navigate('/user/make-payment', { state: { cartData, formData } });
+  };
+
+
   return (
-    <div>
-      <button onClick={handleCheckout} disabled={loading}>
-        {loading ? "Processing..." : "Checkout"}
-      </button>
+    <div className="max-w-xl mx-auto my-10 bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+      <h2 className="text-2xl font-bold mb-6 text-pink-600 dark:text-pink-400">Checkout Form</h2>
+      <div className="space-y-4">
+        {['fullName', 'address', 'city', 'postalCode', 'phone'].map((field) => (
+          <input
+            key={field}
+            type="text"
+            name={field}
+            placeholder={field.replace(/([A-Z])/g, ' $1')}
+            value={formData[field]}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border rounded-md dark:bg-gray-700 dark:text-white"
+          />
+        ))}
+        <button
+          className="btn w-full bg-pink-600 text-white hover:bg-pink-700"
+          onClick={handleContinue}
+        >
+          Continue to Payment
+        </button>
+      </div>
     </div>
   );
 };
-
-export default Checkout;

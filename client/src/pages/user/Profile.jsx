@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../config/axioInstance";
 
 
+
 export const Profile = () => {
   const [profileData, isLoading, error] = useFetch("/user/profile");
   const [isProfileEdit, setisProfileEdit] = useState(false);

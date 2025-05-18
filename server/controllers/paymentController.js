@@ -8,51 +8,41 @@ const client_domain = process.env.CLIENT_DOMAIN;
 export const createCheckoutSession = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { products } = req.body;
-
-    console.log("Received Products:", products);
+    const { products, checkoutInfo } = req.body;
 
     if (!products || products.length === 0) {
       return res.status(400).json({ message: "No products found for checkout" });
     }
 
-
+    if (!checkoutInfo || !checkoutInfo.name || !checkoutInfo.address || !checkoutInfo.phone) {
+      return res.status(400).json({ message: "Checkout information is incomplete" });
+    }
 
     const lineItems = products.map((product) => {
       const productDetails = product.product;
-
-      if (!productDetails?.name || !productDetails?.price || !productDetails?.image.url) {
-        throw new Error("Product details are incomplete.");
-      }
-
-      if (isNaN(productDetails.price) || productDetails.price <= 0) {
-        throw new Error("Invalid price for product.");
-      }
 
       return {
         price_data: {
           currency: "inr",
           product_data: {
             name: productDetails.name,
-            images: [productDetails.images],
+            images: [productDetails.image?.url],
             description: productDetails.description || 'No description available',
           },
-          unit_amount: Math.round(productDetails.price * 100), // Convert price to cents (for INR)
+          unit_amount: Math.round(productDetails.price * 100),
         },
         quantity: product.quantity || 1,
       };
     });
 
-    // Create the checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
-      success_url: `${client_domain}/user/payment/success`,
+      success_url: `${client_domain}/user/payment/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${client_domain}/user/payment/cancel`,
     });
 
- // Store full product data in order
     const newOrder = new Order({
       userId,
       sessionId: session.id,
@@ -63,15 +53,19 @@ export const createCheckoutSession = async (req, res) => {
         quantity: item.quantity,
         image: item.product.image?.url,
       })),
-      status: "Pending", // Mark as pending initially
+
+      status: "Pending",
+      stripeSessionId: session.id,
+      checkoutInfo, // Save form data
     });
 
     await newOrder.save();
 
     res.json({ success: true, sessionId: session.id });
+
   } catch (error) {
     console.error("Error creating Stripe session:", error);
-    return res.status(error.statusCode || 500).json({
+    res.status(error.statusCode || 500).json({
       message: error.message || "Internal server error",
     });
   }
@@ -113,17 +107,47 @@ export const getSessionStatus = async (req, res) => {
 
 export const getUserOrders = async (req, res) => {
   try {
-    console.log("Reached getUserOrders with userId:", req.user.id); // 👈
+    console.log("Reached getUserOrders with userId:", req.user.id); 
 
     const orders = await Order.find({ userId: req.user.id })
       .populate("products.product")
       .sort({ createdAt: -1 });
 
-    console.log("Orders fetched:", orders.length); // 👈
+    console.log("Orders fetched:", orders.length); 
 
     res.status(200).json({ orders });
   } catch (error) {
-    console.error("Error in getUserOrders:", error); // 👈
+    console.error("Error in getUserOrders:", error); 
     res.status(500).json({ message: "Failed to fetch orders" });
+  }
+};
+
+export const verifyPaymentAndUpdateOrder = async (req, res) => {
+  const { sessionId } = req.params;
+ console.log("verifyPaymentAndUpdateOrder called with sessionId:", sessionId);
+
+  try {
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+    if (session.payment_status === 'paid') {
+      const order = await Order.findOne({ stripeSessionId: sessionId });
+
+      if (!order) {
+        return res.status(404).json({ message: 'Order not found' });
+      }
+
+      order.status = 'paid';
+      order.paymentStatus = 'succeeded';
+      await order.save();
+      console.log("Order updated to paid successfully");
+
+
+      return res.status(200).json({ message: 'Order updated successfully' });
+    } else {
+      return res.status(400).json({ message: 'Payment not completed yet' });
+    }
+  } catch (error) {
+    console.error('Error verifying payment:', error);
+    return res.status(500).json({ message: 'Internal server error' });
   }
 };

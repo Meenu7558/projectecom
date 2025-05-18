@@ -11,6 +11,13 @@ const orderSchema = new Schema(
       type: String,
       required: true,
     },
+
+  checkoutInfo: {
+  name: String,
+  address: String,
+  phone: String
+},
+
     products: [
       {
         product: {

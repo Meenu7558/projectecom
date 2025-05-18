@@ -10,7 +10,7 @@ import { UserLayout } from "../layout/UserLayout";
 import { Signup } from "../pages/shared/Signup";
 import { AdminLayout } from "../layout/AdminLayout";
 import { ErrorPage } from "../pages/shared/ErrorPage";
-import { ProductDetails } from "../pages/user/ProductDetails";
+
 
 import { Profile } from "../pages/user/Profile";
 import { Cart } from "../pages/user/Cart";
@@ -30,6 +30,11 @@ import ManageProduct from "../pages/seller/ManageProduct";
 import { Shop } from "../pages/user/Shop";
 import AdminHome from "../pages/admin/Admindisplay";
 import OrderDetails from "../pages/user/OrderDetails";
+import { ProductDetails } from "../pages/user/productdetails";
+import { CheckoutForm } from "../pages/user/checkout";
+import { MakePayment } from "../pages/user/MakePayment";
+import { PaymentSuccess } from "../pages/user/PaymentSuccess";
+
 
 
 
@@ -97,8 +102,17 @@ export const router = createBrowserRouter([
           },
           {
             path: "payment/success",
-            element: <h2>Payment success</h2>,
+            element: <PaymentSuccess/>
           },
+           {
+            path: "checkout",
+            element: <CheckoutForm/>,
+          },
+          {
+            path: "make-payment",
+            element: <MakePayment/>,
+          },
+
         ],
       },
     ],
