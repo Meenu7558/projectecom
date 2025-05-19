@@ -4,6 +4,7 @@ import { generateToken } from "../utils/token.js";
 import { User } from "../models/userModel.js";
 import { Seller } from "../models/sellerModel.js";
 import { Order } from "../models/orderModel.js";
+import { Product } from "../models/productModel.js";
 
 const NODE_ENV = process.env.NODE_ENV;
 // Admin Signup
@@ -262,4 +263,18 @@ export const getOrders = async (req, res, next) => {
     }
 };
 
+export const getAdminDashboardStats = async (req, res) => {
+  try {
+    const totalUsers = await User.countDocuments();
+    const totalProducts = await Product.countDocuments();
+    const totalOrders = await Order.countDocuments();
 
+    res.status(200).json({
+      totalUsers,
+      totalProducts,
+      totalOrders,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch dashboard stats", error: error.message });
+  }
+};

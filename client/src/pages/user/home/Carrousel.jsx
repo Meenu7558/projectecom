@@ -1,40 +1,42 @@
-import React from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { Autoplay, Pagination } from 'swiper/modules'
+import 'swiper/css'
+import 'swiper/css/pagination'
 
-const Carrousel = () => {
+const Carousel = () => {
   return (
-    <div className="w-full bg-pink-50 dark:bg-gray-900 py-6">
-      <div className="carousel rounded-box max-w-6xl mx-auto shadow-lg">
-        <div className="carousel-item px-2">
+    <div className="w-full max-w-6xl mx-auto py-8 px-4">
+      <Swiper
+        modules={[Autoplay, Pagination]}
+        loop={true}
+        autoplay={{ delay: 3000 }}
+        pagination={{ clickable: true }}
+        className="rounded-lg"
+      >
+        <SwiperSlide>
           <img
-            src="https://res.cloudinary.com/dw4wfppju/image/upload/v1746026155/category3_kvslly.jpg"
-            alt="Category 3"
-            className="rounded-xl w-72 h-48 object-cover"
+            src="https://res.cloudinary.com/dw4wfppju/image/upload/v1747665717/makeupbanner_pghroz.png"
+            alt="Makeup Sale"
+            className="w-full h-64 md:h-80 object-cover rounded-lg shadow-md"
           />
-        </div>
-        <div className="carousel-item px-2">
+        </SwiperSlide>
+        <SwiperSlide>
           <img
-            src="https://res.cloudinary.com/dw4wfppju/image/upload/v1746028778/category1_sa0z6n.jpg"
-            alt="Category 1"
-            className="rounded-xl w-72 h-48 object-cover"
+            src="https://res.cloudinary.com/dw4wfppju/image/upload/v1747665748/skinbanner_czbagg.png"
+            alt="Skincare Deals"
+            className="w-full h-64 md:h-80 object-cover rounded-lg shadow-md"
           />
-        </div>
-        <div className="carousel-item px-2">
+        </SwiperSlide>
+        <SwiperSlide>
           <img
-            src="https://res.cloudinary.com/dw4wfppju/image/upload/v1746028810/category2_i8bnpe.avif"
-            alt="Category 2"
-            className="rounded-xl w-72 h-48 object-cover"
+            src="https://res.cloudinary.com/dw4wfppju/image/upload/v1747667162/hairbanner_vtfrry.png"
+            alt="Haircare Essentials"
+            className="w-full h-64 md:h-80 object-cover rounded-lg shadow-md"
           />
-        </div>
-        <div className="carousel-item px-2">
-          <img
-            src="https://res.cloudinary.com/dw4wfppju/image/upload/v1746028879/header2_fiskrq.webp"
-            alt="Category 2 Repeat"
-            className="rounded-xl w-72 h-48 object-cover"
-          />
-        </div>
-      </div>
+        </SwiperSlide>
+      </Swiper>
     </div>
-  );
-};
+  )
+}
 
-export default Carrousel;
+export default Carousel

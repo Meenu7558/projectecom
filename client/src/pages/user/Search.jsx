@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { axiosInstance } from "../../config/axioInstance";
+
 
 const Search = () => {
   const [query, setQuery] = useState("");
@@ -12,14 +13,21 @@ const Search = () => {
 
     setLoading(true);
     setError("");
+    setResults([]);
 
     try {
-      const response = await axios.get(`/api/search?query=${query}`);
+      const response = await axiosInstance.get(`/search?query=${encodeURIComponent(query)}`);
       setResults(response.data.data);
     } catch (err) {
       setError("Search failed. Try again.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const onKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
     }
   };
 
@@ -30,11 +38,16 @@ const Search = () => {
         value={query}
         placeholder="Search products..."
         onChange={(e) => setQuery(e.target.value)}
+        onKeyPress={onKeyPress}
       />
       <button onClick={handleSearch}>Search</button>
 
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
+
+      {!loading && !error && results.length === 0 && query.trim() !== "" && (
+        <p>No results found</p>
+      )}
 
       <ul>
         {results.map((product) => (

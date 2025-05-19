@@ -4,22 +4,21 @@ export const searchProducts = async (req, res) => {
   try {
     const { query } = req.query;
 
-    if (!query) {
+    if (!query || query.trim() === "") {
       return res.status(400).json({ message: "Search query is required" });
     }
 
+    const regex = new RegExp(query, "i"); // case-insensitive
+
     const results = await Product.find({
       $or: [
-        { name: { $regex: query, $options: "i" } }, // case-insensitive
-        { description: { $regex: query, $options: "i" } },
-        { category: { $regex: query, $options: "i" } }
-      ]
-    });
+        { name: { $regex: regex } },
+        { description: { $regex: regex } },
+        { category: { $regex: regex } },
+      ],
+    }).limit(20);
 
-    if (results.length === 0) {
-      return res.status(404).json({ message: "No products found" });
-    }
-
+    // Return empty array if no results (not 404)
     res.status(200).json({ data: results });
   } catch (error) {
     console.error("Error in searchProducts:", error);

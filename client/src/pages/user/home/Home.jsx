@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Hero from './Hero'
-import Carrousel from './Carrousel'
 import FeaturedProducts from './FeaturedProducts'
+import Carousel from './Carrousel'
 
 
 const Home = () => {
@@ -10,7 +10,7 @@ const Home = () => {
     <>
     <Hero/>
     <FeaturedProducts />
-    <Carrousel/>
+    <Carousel/>
     </>
   )
 }

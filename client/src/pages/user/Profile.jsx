@@ -41,77 +41,81 @@ export const Profile = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-8">
-      {/* Header + Buttons */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
-          <div className="text-center sm:text-left">
-            <h1 className="text-3xl font-bold text-pink-600 dark:text-pink-400">
-              Welcome, {profileData?.name || "Loading..."}
-            </h1>
-            <p className="text-gray-600 dark:text-gray-300">{profileData?.email || "Loading..."}</p>
-          </div>
-
-
-
-
-            <div className="flex flex-col sm:flex-row gap-3">
-      <button
-        className="btn bg-pink-500 text-white hover:bg-pink-600"
-        onClick={handleOrdersClick} // On click, navigate to orders page
-      >
-        Orders
-      </button>
+  <div className="max-w-4xl mx-auto p-4 sm:p-6 space-y-8">
     
-
-
-
-
-            <button
-              className="btn bg-pink-200 text-pink-900 hover:bg-pink-300 dark:bg-pink-600 dark:text-white dark:hover:bg-pink-500"
-              onClick={() => setisProfileEdit(!isProfileEdit)}
-            >
-              {isProfileEdit ? 'Cancel Edit' : 'Edit Profile'}
-            </button>
-            <button
-              className="btn bg-red-500 text-white hover:bg-red-600"
-              onClick={handleLogOut}
-            >
-              Logout
-            </button>
-          </div>
+    {/* Header + Buttons */}
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+        
+        {/* Welcome Text */}
+        <div className="text-center sm:text-left">
+          <h1 className="text-3xl font-bold text-pink-600 dark:text-pink-400">
+            Welcome, {profileData?.name || "Loading..."}
+          </h1>
+          <p className="text-gray-600 dark:text-gray-300">{profileData?.email || "Loading..."}</p>
         </div>
-      </div>
 
-      {/* Edit Form */}
-      {isProfileEdit && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <EditProfileForm 
-            setisProfileEdit={setisProfileEdit} 
-            initialProfileData={profileData} 
-          />
-        </div>
-      )}
+        {/* Buttons */}
+        <div className="flex flex-col sm:flex-row gap-3">
+          <button
+            className="bg-pink-500 text-white px-5 py-2 rounded-lg shadow hover:bg-pink-600 transition"
+            onClick={handleOrdersClick}
+          >
+            Orders
+          </button>
 
-      {/* Profile Details Card */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 text-center space-y-4">
-        <div className="flex justify-center">
-          <img
-            src={profileData?.profilePic || "/default-profile-pic.jpg"}
-            alt="Profile"
-            className="w-32 h-32 rounded-full object-cover border-4 border-pink-400 shadow"
-          />
+          <button
+            className="bg-pink-200 text-pink-900 px-5 py-2 rounded-lg hover:bg-pink-300 dark:bg-pink-600 dark:text-white dark:hover:bg-pink-500 transition"
+            onClick={() => setisProfileEdit(!isProfileEdit)}
+          >
+            {isProfileEdit ? "Cancel Edit" : "Edit Profile"}
+          </button>
+
+          <button
+            className="bg-red-500 text-white px-5 py-2 rounded-lg shadow hover:bg-red-600 transition"
+            onClick={handleLogOut}
+          >
+            Logout
+          </button>
         </div>
-        <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
-          {profileData?.name || "No Name Available"}
-        </h2>
-        <p className="text-gray-600 dark:text-gray-300">
-          Email: {profileData?.email || "No Email Available"}
-        </p>
-        <p className="text-gray-600 dark:text-gray-300">
-          Mobile: {profileData?.mobile || "No Mobile Available"}
-        </p>
       </div>
     </div>
-  );
-};
+
+    {/* Edit Form */}
+    {isProfileEdit && (
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
+        <EditProfileForm 
+          setisProfileEdit={setisProfileEdit} 
+          initialProfileData={profileData} 
+        />
+      </div>
+    )}
+
+    {/* Profile Info Card */}
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 text-center space-y-4">
+      <div className="flex justify-center">
+
+        <img
+  src={
+    profileData?.profilePic ||
+    "https://cdn-icons-png.flaticon.com/512/847/847969.png"
+  }
+  alt="Profile"
+  className="w-32 h-32 rounded-full object-cover border-4 border-pink-400 shadow"
+/>
+
+      </div>
+      <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
+        {profileData?.name || "No Name Available"}
+      </h2>
+      <p className="text-gray-600 dark:text-gray-300">
+        Email: {profileData?.email || "No Email Available"}
+      </p>
+      <p className="text-gray-600 dark:text-gray-300">
+        Mobile: {profileData?.mobile || "No Mobile Available"}
+       </p>
+    </div>
+  </div>
+);
+
+}
