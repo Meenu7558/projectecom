@@ -42,6 +42,7 @@ import { ProductDetails } from "../pages/user/ProductDetails";
 
 
 
+
 const data = {};
 export const router = createBrowserRouter([
   {
