@@ -3,42 +3,31 @@ import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { useFetch } from "../../hooks/usefetch";
 
+
 export const ManageSellers = () => {
   const [refresh, setRefresh] = useState(false);
 
-  // Fetch all sellers (Assuming your backend API is ready)
+  // Fetch sellers list from backend
   const [sellers, isLoading, error] = useFetch("/admin/getsellers", refresh);
 
-  // Approve seller
-  const handleApprove = async (id) => {
-    try {
-      await axiosInstance.put(`/admin/approve-seller/${id}`);
-      toast.success("Seller approved successfully!");
-      setRefresh(!refresh);
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to approve seller");
-    }
-  };
-
-  // Block seller
+  // Block seller handler
   const handleBlock = async (id) => {
     try {
       await axiosInstance.put(`/admin/block-seller/${id}`);
       toast.success("Seller blocked successfully!");
-      setRefresh(!refresh);
+      setRefresh((prev) => !prev);
     } catch (error) {
       console.error(error);
       toast.error("Failed to block seller");
     }
   };
 
-  // Unlock seller
+  // Unblock seller handler
   const handleUnlock = async (id) => {
     try {
       await axiosInstance.put(`/admin/unblock-seller/${id}`);
       toast.success("Seller unblocked successfully!");
-      setRefresh(!refresh);
+      setRefresh((prev) => !prev);
     } catch (error) {
       console.error(error);
       toast.error("Failed to unblock seller");
@@ -47,13 +36,15 @@ export const ManageSellers = () => {
 
   return (
     <div className="p-8">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-pink-600">Manage Sellers</h2>
+      <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-pink-600">
+        Manage Sellers
+      </h2>
 
       {isLoading ? (
         <p className="text-gray-800 dark:text-white">Loading sellers...</p>
       ) : error ? (
         <p className="text-red-500 dark:text-red-300">Error loading sellers</p>
-      ) : sellers?.length === 0 ? (
+      ) : sellers.length === 0 ? (
         <p className="text-gray-800 dark:text-white">No sellers found.</p>
       ) : (
         <div className="overflow-x-auto">
@@ -79,30 +70,33 @@ export const ManageSellers = () => {
                     )}
                   </td>
                   <td className="py-4 px-6 space-x-4">
-                    {!seller.isBlocked && (
-                      <button
-                        onClick={() => handleBlock(seller._id)}
-                        className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700"
-                      >
-                        Block
-                      </button>
-                    )}
-                    {seller.isBlocked && (
-                      <div>
-                        <button
-                          onClick={() => handleApprove(seller._id)}
-                          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700"
-                        >
-                          Approve
-                        </button>
-                        <button
-                          onClick={() => handleUnlock(seller._id)}
-                          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 ml-4"
-                        >
-                          Unlock
-                        </button>
-                      </div>
-                    )}
+                    <button
+                      onClick={() => handleBlock(seller._id)}
+                      disabled={seller.isBlocked}
+                      className={`px-4 py-2 rounded text-white ${
+                        seller.isBlocked
+                          ? "bg-red-300 cursor-not-allowed"
+                          : "bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700"
+                      }`}
+                    >
+                      Block
+                    </button>
+                
+
+
+                <button
+               onClick={() => handleUnlock(seller._id)}
+               disabled={!seller.isBlocked}
+                className={`px-4 py-2 rounded text-white ml-4 ${
+                !seller.isBlocked
+               ? "bg-blue-300 cursor-not-allowed"
+               : "bg-blue-500 hover:bg-blue-600 cursor-pointer"
+                   }`}
+              >
+                  Unblock
+               </button>
+
+                    
                   </td>
                 </tr>
               ))}
