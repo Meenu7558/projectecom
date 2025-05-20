@@ -30,10 +30,11 @@ import ManageProduct from "../pages/seller/ManageProduct";
 import { Shop } from "../pages/user/Shop";
 import AdminHome from "../pages/admin/Admindisplay";
 import OrderDetails from "../pages/user/OrderDetails";
-import { ProductDetails } from "../pages/user/productDetails";
+
 import { CheckoutForm } from "../pages/user/checkout";
 import { MakePayment } from "../pages/user/MakePayment";
 import { PaymentSuccess } from "../pages/user/PaymentSuccess";
+import { ProductDetails } from "../pages/user/ProductDetails";
 
 
 
