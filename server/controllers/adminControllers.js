@@ -250,6 +250,25 @@ export const blockSeller = async (req, res) => {
 };
 
 
+export const unblockSeller = async (req, res) => {
+  try {
+    const sellerId = req.params.id;
+    const seller = await Seller.findById(sellerId);
+
+    if (!seller) {
+      return res.status(404).json({ message: "Seller not found" });
+    }
+
+    seller.isBlocked = false;
+    await seller.save();
+
+    res.status(200).json({ message: "Seller unblocked successfully" });
+  } catch (error) {
+    console.error("Error unblocking seller:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 export const getOrders = async (req, res, next) => {
     try {
         // Fetch all orders
