@@ -14,6 +14,15 @@ export const Cart = () => {
     const [cartDetails, isLoading, error] = useFetch('/cart/getcart', refreshState);
     console.log("cartDetails=== ", cartDetails);
 
+    const transformedItems = cartDetails?.items?.map(item => ({
+    productId: item.product._id,
+    productName: item.product.name,
+    price: item.product.price,
+    quantity: item.quantity,
+    _id: item._id,
+    image: item.product.image?.url || '',
+  })) || [];
+
     
     const handleRemoveCartItem = async (productId) => {
         try {

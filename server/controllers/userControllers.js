@@ -87,14 +87,14 @@ export const userLogin = async (req, res, next) => {
             return res.status(500).json({ message: "Token generation failed" });
           }
 
+res.cookie("token", token, {
+  sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+  secure: process.env.NODE_ENV === "production", // true if HTTPS
+  httpOnly: true,
+  maxAge: 24 * 60 * 60 * 1000
+});
 
-          
-    res.cookie("token", token, {
-      sameSite: NODE_ENV === "production" ? "None" : "Lax",
-      secure: NODE_ENV === "production",
-      httpOnly: NODE_ENV === "production",
-    });
-
+   
 
           delete user._doc.password;
           return res.json({ data: user, token, message: "User login successful" });

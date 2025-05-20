@@ -9,6 +9,9 @@ export const createCheckoutSession = async (req, res) => {
   try {
     const userId = req.user.id;
     const { products, checkoutInfo } = req.body;
+    console.log("createCheckoutSession called");
+    console.log("Received products:", products);
+    console.log("Received checkoutInfo:", checkoutInfo);
 
     if (!products || products.length === 0) {
       return res.status(400).json({ message: "No products found for checkout" });
@@ -34,6 +37,7 @@ export const createCheckoutSession = async (req, res) => {
         quantity: product.quantity || 1,
       };
     });
+ console.log("Line items ready for Stripe:", lineItems);
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -42,6 +46,8 @@ export const createCheckoutSession = async (req, res) => {
       success_url: `${client_domain}/user/payment/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${client_domain}/user/payment/cancel`,
     });
+ console.log("Stripe session created:", session.id);
+
 
     const newOrder = new Order({
       userId,
@@ -54,9 +60,10 @@ export const createCheckoutSession = async (req, res) => {
         image: item.product.image?.url,
       })),
 
-      status: "Pending",
+      status: "pending",
       stripeSessionId: session.id,
       checkoutInfo, // Save form data
+      paymentStatus: "pending",
     });
 
     await newOrder.save();
