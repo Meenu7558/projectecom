@@ -31,7 +31,7 @@ import { Shop } from "../pages/user/Shop";
 import AdminHome from "../pages/admin/Admindisplay";
 import OrderDetails from "../pages/user/OrderDetails";
 
-import { CheckoutForm } from "../pages/user/checkout";
+import { CheckoutForm } from "../pages/user/Checkout";
 import { MakePayment } from "../pages/user/MakePayment";
 import { PaymentSuccess } from "../pages/user/PaymentSuccess";
 import { ProductDetails } from "../pages/user/ProductDetails";
