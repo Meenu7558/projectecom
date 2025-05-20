@@ -30,7 +30,11 @@ const sellerSchema = new Schema({
      isActive:{
         type:Boolean,
         default:true
-     }
+     },
+      isBlocked: {
+    type: Boolean,
+    default: false,
+  },
 
 }
 );
