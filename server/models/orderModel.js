@@ -7,33 +7,41 @@ const orderSchema = new Schema(
       ref: "User",
       required: true,
     },
-    sessionId: {
+    stripeSessionId: {
       type: String,
       required: true,
+      unique: true,
     },
 
-  checkoutInfo: {
-  name: String,
-  address: String,
-  phone: String
-},
+    checkoutInfo: {
+      name: { type: String, required: true },
+      address: { type: String, required: true },
+      phone: { type: String, required: true },
+    },
 
     products: [
       {
         product: {
           type: Schema.Types.ObjectId,
-          ref: "Product", // Adjust to your actual product model
+          ref: "Product",
+          required: true,
         },
-        name: String,
-        price: Number,
-        quantity: Number,
+        name: { type: String, required: true },
+        price: { type: Number, required: true },
+        quantity: { type: Number, required: true },
         image: String,
       },
     ],
+
     status: {
       type: String,
-      enum: ["Pending", "Paid", "Failed"],
+      enum: ["pending", "paid", "failed"],
       default: "Pending",
+    },
+    paymentStatus: {
+      type: String,
+      enum: ["pending", "succeeded", "failed"],
+      default: "pending",
     },
   },
   {

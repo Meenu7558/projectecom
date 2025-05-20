@@ -97,7 +97,7 @@ export const getSessionStatus = async (req, res) => {
 
     // 2. Update order status if payment is completed
     if (session.payment_status === "paid") {
-      order.status = "Paid";
+      order.status = "paid";
       await order.save();
     }
 
