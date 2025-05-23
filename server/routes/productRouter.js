@@ -1,6 +1,7 @@
 import express from "express";
-import { getProducts, getProductDetails,createProduct,updateProduct,deleteProduct, getFeaturedProducts, getProductById} from "../controllers/productControllers.js";
-import { sellerAuth } from "../middlewares/sellerAuth.js";
+import { getProducts, getProductDetails,createProduct,updateProduct,deleteProduct, getFeaturedProducts, getProductById, addProductReview} from "../controllers/productControllers.js";
+import { sellerAuth  } from "../middlewares/sellerAuth.js";
+import {userAuth} from "../middlewares/userAuth.js";
 import { upload } from "../middlewares/multer.js";
 
 
@@ -19,6 +20,8 @@ router.delete('/productsdelete/:id',sellerAuth, deleteProduct);
 router.get('/featured', getFeaturedProducts);
 
 router.get("/:id", getProductById);
+
+router.post('/:id/reviews', userAuth, addProductReview);
 
 
 export { router as productRouter };

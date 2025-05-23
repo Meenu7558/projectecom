@@ -35,6 +35,7 @@ import { CheckoutForm } from "../pages/user/Checkout";
 import { MakePayment } from "../pages/user/MakePayment";
 import { PaymentSuccess } from "../pages/user/PaymentSuccess";
 import { ProductDetails } from "../pages/user/ProductDetails";
+import ReviewForm from "../pages/user/review";
 
 
 
@@ -114,6 +115,10 @@ export const router = createBrowserRouter([
           {
             path: "make-payment",
             element: <MakePayment/>,
+          },
+           {
+            path: "add-review/:id",
+            element: <ReviewForm />,
           },
 
         ],

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../config/axioInstance";
 
 
+
 const OrderDetails = () => {
   const [orderDetails, setOrderDetails] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -39,13 +40,19 @@ const OrderDetails = () => {
       <h1 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Order Details</h1>
       {orderDetails.length > 0 ? (
         orderDetails.map((order, idx) => (
-          <div key={idx} className="mb-6 border border-gray-200 dark:border-gray-700 rounded-md p-4 bg-gray-50 dark:bg-gray-800">
+          <div
+            key={idx}
+            className="mb-6 border border-gray-200 dark:border-gray-700 rounded-md p-4 bg-gray-50 dark:bg-gray-800"
+          >
             <p className="text-gray-800 dark:text-gray-200 mb-2">
               <strong>Status:</strong> {order.status || "Paid"}
             </p>
             <ul className="space-y-4">
               {order.products.map((product, index) => (
-                <li key={index} className="border border-gray-200 dark:border-gray-600 p-3 rounded bg-white dark:bg-gray-700">
+                <li
+                  key={index}
+                  className="border border-gray-200 dark:border-gray-600 p-3 rounded bg-white dark:bg-gray-700"
+                >
                   <p className="text-gray-800 dark:text-gray-100">
                     <strong>Name:</strong> {product.name}
                   </p>
@@ -62,6 +69,14 @@ const OrderDetails = () => {
                       className="w-20 h-20 object-cover mt-2 rounded"
                     />
                   )}
+
+                  {/* Add Review Button */}
+                  <button
+                    className="mt-3 px-4 py-2 bg-pink-600 text-white rounded hover:bg-pink-700"
+                    onClick={() => navigate(`/user/add-review/${product._id}`)}
+                  >
+                    Add Review
+                  </button>
                 </li>
               ))}
             </ul>
@@ -72,7 +87,6 @@ const OrderDetails = () => {
       )}
     </div>
   );
-  
 };
 
 export default OrderDetails;
