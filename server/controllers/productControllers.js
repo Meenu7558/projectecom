@@ -155,6 +155,7 @@ export const getProductById = async (req, res) => {
 export const addProductReview = async (req, res) => {
   const { rating, comment } = req.body;
   const product = await Product.findById(req.params.id);
+  console.log("Product found:", product);
 
   if (!product) {
     return res.status(404).json({ message: 'Product not found' });
