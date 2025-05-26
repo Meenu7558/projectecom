@@ -4,28 +4,27 @@ import { Product } from "../models/productModel.js";
 
 import mongoose from "mongoose";
 
+
 export const addReview = async (req, res) => {
   try {
-    const { productId, rating, comment } = req.body;
+    const { rating, comment } = req.body;
+    const { productId } = req.params;
     const userId = req.user.id;
 
     if (!productId || !rating || !comment) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    // Check if product exists
     const product = await Product.findById(productId);
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    // Check if user has already reviewed this product
     const existingReview = await Review.findOne({ user: userId, product: productId });
     if (existingReview) {
       return res.status(400).json({ message: "You have already reviewed this product" });
     }
 
-    // Create new review
     const newReview = new Review({
       user: userId,
       product: productId,
@@ -35,7 +34,6 @@ export const addReview = async (req, res) => {
 
     await newReview.save();
 
-    // Update product rating
     const reviews = await Review.find({ product: productId });
     const avgRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
 
@@ -50,8 +48,6 @@ export const addReview = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-
 
 export const getProductReviews = async (req, res) => {
   try {
