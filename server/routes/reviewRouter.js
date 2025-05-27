@@ -7,7 +7,7 @@ import { adminAuth } from "../middlewares/adminAuth.js";
 const router = express.Router();
 
 //add
-router.post("/add", userAuth, addReview);
+router.post("/add/:productId", userAuth, addReview);
 
 // Get all reviews 
 router.get("/product/:productId", getProductReviews);

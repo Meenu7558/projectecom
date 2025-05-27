@@ -20,11 +20,13 @@ const ReviewForm = () => {
     }
 
     try {
-      const response = await axiosInstance.post(`/product/${id}/reviews`, {
-        rating,
-        comment,
-      });
+     const response = await axiosInstance.post(`/review/add/${id}`, {
+     rating,
+     comment,
+    });
 
+
+      
       setSuccess("Review submitted successfully!");
       setError("");
       setRating(0);
