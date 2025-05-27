@@ -20,11 +20,7 @@ const ProductSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-reviews: [reviewSchema],
-  rating: {
-    type: Number,
-    default: 0,
-  },
+
   numReviews: {
     type: Number,
     default: 0,
