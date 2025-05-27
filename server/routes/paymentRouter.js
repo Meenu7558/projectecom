@@ -14,6 +14,6 @@ router.get('/session-status', getSessionStatus);
   
 router.get("/my-orders", userAuth, getUserOrders);
 
-router.get('/payment/verify/:sessionId', verifyPaymentAndUpdateOrder);
+router.get('/verify/:sessionId', verifyPaymentAndUpdateOrder);
 
 export { router as paymentRouter };

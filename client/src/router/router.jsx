@@ -1,17 +1,13 @@
 import {createBrowserRouter} from "react-router-dom";
 import { Navigate } from 'react-router-dom';
-
 import Home from "../pages/user/home/Home";
 import Contact from "../pages/user/Contact";
 import About from "../pages/user/About";
-
 import Login from "../pages/shared/Login";
 import { UserLayout } from "../layout/UserLayout";
 import { Signup } from "../pages/shared/Signup";
 import { AdminLayout } from "../layout/AdminLayout";
 import { ErrorPage } from "../pages/shared/ErrorPage";
-
-
 import { Profile } from "../pages/user/Profile";
 import { Cart } from "../pages/user/Cart";
 import Search from "../pages/user/Search";
@@ -30,12 +26,12 @@ import ManageProduct from "../pages/seller/ManageProduct";
 import { Shop } from "../pages/user/Shop";
 import AdminHome from "../pages/admin/Admindisplay";
 import OrderDetails from "../pages/user/OrderDetails";
-
 import { CheckoutForm } from "../pages/user/Checkout";
 import { MakePayment } from "../pages/user/MakePayment";
 import { PaymentSuccess } from "../pages/user/PaymentSuccess";
 import { ProductDetails } from "../pages/user/ProductDetails";
 import ReviewForm from "../pages/user/review";
+import { AdminProtectedRoute } from "./AdminProtected";
 
 
 
@@ -125,51 +121,60 @@ export const router = createBrowserRouter([
       },
     ],
   },
-  {
-    path: "admin",
-    element: <AdminLayout />,
-    errorElement: <ErrorPage role="admin" />,
-    children: [
-      {
-        index: true, 
-        element: <Navigate to="home" />,
-      },
-      {
-        path: "login",
-        element: <Login role="admin" />,
-      },
-      {
-        path: "signup",
-        element: <Signup role="admin" />,
-      },
-      {
-        path: "home",
-        element: <AdminHome />,
-      },
 
 
-      {
-        path: "dashboard",
-        element: <Dashboard />, // Admin dashboard
-      },
-      {
-        path: "products",
-        element: <ManageProducts />, // Admin manage products
-      },
-      {
-        path: "users",
-        element: <ManageUsers />, // Admin manage users
-      },
-      {
-        path: "orders",
-        element: <ManageOrders />, // Admin manage orders
-      },
-      {
-        path: "sellers",
-        element: <ManageSellers />, // Admin manage seller
-      },
-    ],
-  },
+{
+  path: "admin",
+  element: <AdminLayout />,
+  errorElement: <ErrorPage role="admin" />,
+  children: [
+    {
+      index: true,
+      element: <Navigate to="home" />,
+    },
+    {
+      path: "login",
+      element: <Login role="admin" />,
+    },
+    {
+      path: "signup",
+      element: <Signup role="admin" />,
+    },
+
+    // 👇 Wrap the protected routes here
+    {
+      element: <AdminProtectedRoute />,
+      children: [
+        {
+          path: "home",
+          element: <AdminHome />,
+        },
+        {
+          path: "dashboard",
+          element: <Dashboard />,
+        },
+        {
+          path: "products",
+          element: <ManageProducts />,
+        },
+        {
+          path: "users",
+          element: <ManageUsers />,
+        },
+        {
+          path: "orders",
+          element: <ManageOrders />,
+        },
+        {
+          path: "sellers",
+          element: <ManageSellers />,
+        },
+      ],
+    },
+  ],
+},
+
+  
   {
     path: "seller",
     element: <SellerLayout />,
