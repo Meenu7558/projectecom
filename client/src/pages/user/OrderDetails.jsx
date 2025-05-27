@@ -73,7 +73,11 @@ const OrderDetails = () => {
                   {/* Add Review Button */}
                   <button
                     className="mt-3 px-4 py-2 bg-pink-600 text-white rounded hover:bg-pink-700"
-                    onClick={() => navigate(`/user/add-review/${product._id}`)}
+                    onClick={() => {
+                    console.log("Navigating to review for product:", product.product);
+                 navigate(`/user/add-review/${product.product}`);
+                   }}
+
                   >
                     Add Review
                   </button>
