@@ -270,16 +270,51 @@ export const unblockSeller = async (req, res) => {
 };
 
 export const getOrders = async (req, res, next) => {
-    try {
-        // Fetch all orders
-        const orders = await Order.find(); // You can add query filters like .populate() if needed
-        res.status(200).json({
-            success: true,
-            orders,
-        });
-    } catch (err) {
-        next(new ErrorResponse("Failed to fetch orders", 500));
+  try {
+    const orders = await Order.find()
+      .populate("userId", "name email") // Populate user details
+      .populate("products.product", "name price image"); // Populate product details
+
+    res.status(200).json({
+      success: true,
+      orders,
+    });
+  } catch (err) {
+    next(new ErrorResponse("Failed to fetch orders", 500));
+  }
+};
+
+export const updateOrderStatus = async (req, res, next) => {
+  try {
+    const { orderId } = req.params;
+    const { status } = req.body;
+
+    const validStatuses = ["Processing", "Shipped", "Out for Delivery", "Delivered"];
+    const formattedStatus = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+
+    if (!validStatuses.includes(formattedStatus)) {
+      return res.status(400).json({ success: false, message: "Invalid status" });
     }
+
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Order not found" });
+    }
+
+    order.orderStatus = formattedStatus;
+    await order.save();
+
+    // Optional: populate user and products before returning
+    await order.populate("userId", "name email").populate("products.product", "name price image");
+
+    res.status(200).json({
+      success: true,
+      message: "Order status updated",
+      order,
+    });
+  } catch (err) {
+    next(new ErrorResponse("Failed to update order", 500));
+  }
 };
 
 export const getAdminDashboardStats = async (req, res) => {

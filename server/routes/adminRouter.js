@@ -1,5 +1,5 @@
 import express from "express";
-import { adminSignup ,adminLogin,adminProfile,adminLogout,updateAdminProfile,forgotAdminPassword,changeAdminPassword, blockUser, unblockUser, getAllUsers, getAllSellers, approveSeller, blockSeller, getOrders, getAdminDashboardStats, deleteUser, unblockSeller } from "../controllers/adminControllers.js";
+import { adminSignup ,adminLogin,adminProfile,adminLogout,updateAdminProfile,forgotAdminPassword,changeAdminPassword, blockUser, unblockUser, getAllUsers, getAllSellers, approveSeller, blockSeller, getOrders, getAdminDashboardStats, deleteUser, unblockSeller, updateOrderStatus } from "../controllers/adminControllers.js";
 import {adminAuth}from "../middlewares/adminAuth.js";
 
 const router = express.Router();
@@ -42,6 +42,8 @@ router.put("/approve-seller/:id", adminAuth, approveSeller);
 router.put("/block-seller/:id",  adminAuth,  blockSeller);
 
 router.get("/orders", adminAuth, getOrders);
+router.put("/orders/:orderId/status", adminAuth , updateOrderStatus);
+
 
 router.get("/dashboard",adminAuth, getAdminDashboardStats);
 router.delete('/delete-user/:id', adminAuth, deleteUser);

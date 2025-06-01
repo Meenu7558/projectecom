@@ -11,10 +11,10 @@ const reviewSchema = new Schema({
     ref: "Product",
     required: true,
   },
-  rating: {
+ rating: {
     type: Number,
     required: true,
-    min: 1,
+    min:  1,
     max: 5,
   },
   comment: {

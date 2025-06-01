@@ -127,3 +127,30 @@ export const getAverageRating = async (req, res) => {
   }
 };
 
+export const getSingleProduct = async (req, res) => {
+  try {
+    const { productId } = req.params;
+
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    // Fetch associated reviews and populate user name
+    const reviews = await Review.find({ product: productId })
+      .populate("user", "name")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      message: "Product details",
+      data: {
+        ...product._doc,
+        reviews, 
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching product details:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};

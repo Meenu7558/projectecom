@@ -20,7 +20,12 @@ export const getProducts = async (req, res) => {
 export const getProductDetails = async (req, res) => {
   try {
     const { productId } = req.params;
-    const product = await Product.findById(productId).populate("seller");
+    
+   const product = await Product.findById(productId).populate("seller");
+
+
+
+
     if (!product) return res.status(404).json({ message: "Product not found" });
 
     res.json({ success: true, data: product, message: "Product details" });

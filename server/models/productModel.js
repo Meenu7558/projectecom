@@ -7,6 +7,8 @@ const ProductSchema = new mongoose.Schema({
   category: { type: String, required: true },
   stock: { type: Number, required: true, default: 0 },
   featured: {type: Boolean,default: false },
+ 
+
 
   image: {
     public_id: { type: String, required: true },
@@ -20,6 +22,11 @@ const ProductSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+  
+  rating: {         
+    type: Number,
+    default: 0,
+  }, 
 
   numReviews: {
     type: Number,
@@ -28,5 +35,7 @@ const ProductSchema = new mongoose.Schema({
 
   createdAt: { type: Date, default: Date.now },
 });
+
+
 
 export const Product = mongoose.model("Product", ProductSchema);

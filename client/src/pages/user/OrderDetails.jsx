@@ -73,10 +73,16 @@ const OrderDetails = () => {
                   {/* Add Review Button */}
                   <button
                     className="mt-3 px-4 py-2 bg-pink-600 text-white rounded hover:bg-pink-700"
-                    onClick={() => {
-                    console.log("Navigating to review for product:", product.product);
-                 navigate(`/user/add-review/${product.product}`);
-                   }}
+         
+            
+onClick={() => {
+  // If product.product is an object, get its _id
+  const productId = typeof product.product === 'object' ? product.product._id : product.product;
+  navigate(`/user/add-review/${productId}`);
+}}
+
+                  
+
 
                   >
                     Add Review

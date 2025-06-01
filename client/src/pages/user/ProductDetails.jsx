@@ -5,9 +5,12 @@ import toast from "react-hot-toast";
 import { axiosInstance } from "../../config/axioInstance";
 import { useFetch } from "../../hooks/usefetch";
 
+
 export const ProductDetails = () => {
   const { productId } = useParams();
   const [productDetails, isLoading, error] = useFetch(`product/productsdetails/${productId}`);
+  const [reviews, reviewsLoading, reviewsError] = useFetch(`review/product/${productId}`);
+
 
   if (isLoading) return <p className="text-center mt-6">Loading...</p>;
   if (error) return <p className="text-center text-red-500 mt-6">Error: {error.message}</p>;
@@ -35,7 +38,6 @@ export const ProductDetails = () => {
   return (
     <div className="p-6">
       <section className="bg-white shadow-md rounded-lg p-6 max-w-xl mx-auto mt-6 dark:bg-gray-800 dark:text-gray-200">
-
         {productDetails.image?.url ? (
           <img
             src={productDetails.image.url}
@@ -65,6 +67,36 @@ export const ProductDetails = () => {
           </button>
         </div>
       </section>
+
+      <section className="mt-10 bg-white dark:bg-gray-800 p-6 rounded shadow">
+  <h3 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-100">Customer Reviews</h3>
+
+  {reviewsLoading ? (
+    <p className="text-gray-500">Loading reviews...</p>
+  ) : reviewsError ? (
+    <p className="text-red-500">Failed to load reviews.</p>
+  ) : Array.isArray(reviews) && reviews.length > 0 ? (
+    <div className="space-y-4">
+      {reviews.map((review) => (
+        <div key={review._id} className="border p-4 rounded-lg bg-gray-50 dark:bg-gray-900">
+          <p className="font-semibold text-gray-700 dark:text-white">{review.user?.name || "Anonymous"}</p>
+          <p className="text-yellow-500">
+            {"⭐".repeat(review.rating)}{" "}
+            <span className="text-sm text-gray-500 dark:text-gray-400 ml-2">
+              {new Date(review.createdAt).toLocaleDateString()}
+            </span>
+          </p>
+          <p className="text-gray-800 dark:text-gray-200 mt-2">{review.comment}</p>
+        </div>
+      ))}
+    </div>
+  ) : (
+    <p className="text-gray-600 dark:text-gray-400">No reviews yet.</p>
+  )}
+</section>
+
+
+      
     </div>
   );
 };
