@@ -2,16 +2,18 @@ import React, { useEffect, useState } from "react";
 import { axiosInstance } from "../../config/axioInstance";
 import { toast } from "react-hot-toast";
 
+
+
 const ManageOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [statusUpdate, setStatusUpdate] = useState({});
+  const [updatingStatusId, setUpdatingStatusId] = useState(null); // For loading spinner
 
   const fetchOrders = async () => {
     try {
       const { data } = await axiosInstance.get("/admin/orders");
       setOrders(data.orders);
-       console.log("Fetched orders:", data.orders);
     } catch (error) {
       console.error("Failed to fetch orders", error);
       toast.error("Failed to load orders.");
@@ -19,46 +21,51 @@ const ManageOrders = () => {
       setLoading(false);
     }
   };
+
   const handleStatusChange = async (orderId) => {
-  try {
-    // Use statusUpdate value or fallback to current order status
-    const newStatus =
-      (statusUpdate[orderId] || orders.find((o) => o._id === orderId)?.orderStatus || "")
-        .trim();
+    const newStatus = statusUpdate[orderId]?.trim();
 
     if (!newStatus) {
       toast.error("Please select a valid status.");
       return;
     }
 
-    console.log("Updating Order:", orderId, "with Status:", newStatus);
+    const currentStatus = orders.find((order) => order._id === orderId)?.orderStatus;
 
-    const res = await axiosInstance.put(`/admin/orders/${orderId}/status`, {
-      status: newStatus,
-    });
+    if (newStatus === currentStatus) {
+      toast("No change in status.");
+      return;
+    }
 
-    toast.success("Order status updated successfully!");
-    fetchOrders();
-  } catch (error) {
-    console.error("Failed to update status", error.response?.data || error);
-    const message = error?.response?.data?.message || "Update failed!";
-    toast.error(message);
-  }
-};
+    try {
+      setUpdatingStatusId(orderId);
 
+      await axiosInstance.put(`/admin/orders/${orderId}/status`, {
+        status: newStatus,
+      });
 
+      toast.success("Order status updated successfully!");
+      fetchOrders();
+    } catch (error) {
+      console.error("Failed to update status", error.response?.data || error);
+      const message = error?.response?.data?.message || "Update failed!";
+      toast.error(message);
+    } finally {
+      setUpdatingStatusId(null);
+    }
+  };
 
   useEffect(() => {
-  if (!loading && orders.length > 0) {
-    const initialStatus = {};
-    orders.forEach((order) => {
-      initialStatus[order._id] = order.orderStatus;
-    });
-    setStatusUpdate(initialStatus);
-  }
-}, [loading, orders]);
+    fetchOrders();
+  }, []);
 
-  
+  if (loading) {
+    return (
+      <div className="text-center py-10 text-gray-800 dark:text-gray-100">
+        Loading orders...
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 max-w-6xl mx-auto text-gray-800 dark:text-gray-100">
@@ -88,15 +95,42 @@ const ManageOrders = () => {
 
               <div className="mb-2">
                 <strong>Products:</strong>
-                <ul className="list-disc list-inside ml-4 mt-1">
-          {order.products.map((p, idx) => (
-           <li key={idx}>
-          {p.product?.name || p.name} — ₹{p.product?.price || p.price} × {p.quantity}
-        </li>
-         ))}
+                <div className="mt-2 space-y-3">
+                  {order.products.map((p, idx) => {
+                    const product = p.product || p;
+                    const name = product?.name || p.name || "Unnamed Product";
+                    const price = product?.price || p.price || "N/A";
+                    const quantity = p.quantity ?? "N/A";
+                    const image = product?.image || p.image;
 
-
-                </ul>
+                    return (
+                      <div
+                        key={idx}
+                        className="flex items-center gap-4 border border-gray-200 dark:border-gray-600 p-3 rounded-lg bg-gray-50 dark:bg-gray-900"
+                      >
+                        {image ? (
+                          <img
+                            src={image}
+                            alt={name}
+                            className="w-16 h-16 object-cover rounded"
+                          />
+                        ) : (
+                          <div className="w-16 h-16 bg-gray-300 dark:bg-gray-700 rounded flex items-center justify-center text-sm text-gray-500">
+                            No Image
+                          </div>
+                        )}
+                        <div>
+                          <p className="font-semibold text-gray-800 dark:text-gray-100">
+                            {name}
+                          </p>
+                          <p className="text-sm text-gray-600 dark:text-gray-300">
+                            ₹{price} × {quantity}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
 
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mt-4">
@@ -115,9 +149,44 @@ const ManageOrders = () => {
 
                 <button
                   onClick={() => handleStatusChange(order._id)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-200"
+                  className={`flex items-center gap-2 ${
+                    updatingStatusId === order._id
+                      ? "bg-blue-400 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-700"
+                  } text-white px-4 py-2 rounded transition duration-200`}
+                  disabled={
+                    updatingStatusId === order._id ||
+                    statusUpdate[order._id]?.trim() === order.orderStatus ||
+                    !statusUpdate[order._id]
+                  }
                 >
-                  Update Status
+                  {updatingStatusId === order._id ? (
+                    <>
+                      <svg
+                        className="animate-spin h-5 w-5 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8v4l3.5-3.5L12 0v4a8 8 0 100 16v-4l-3.5 3.5L12 24v-4a8 8 0 01-8-8z"
+                        ></path>
+                      </svg>
+                      Updating...
+                    </>
+                  ) : (
+                    "Update Status"
+                  )}
                 </button>
               </div>
             </div>
@@ -129,3 +198,4 @@ const ManageOrders = () => {
 };
 
 export default ManageOrders;
+
