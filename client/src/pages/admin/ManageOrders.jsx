@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { axiosInstance } from "../../config/axioInstance";
-
+import { toast } from "react-hot-toast";
 
 const ManageOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -13,6 +13,7 @@ const ManageOrders = () => {
       setOrders(data.orders);
     } catch (error) {
       console.error("Failed to fetch orders", error);
+      toast.error("Failed to load orders.");
     } finally {
       setLoading(false);
     }
@@ -20,13 +21,19 @@ const ManageOrders = () => {
 
   const handleStatusChange = async (orderId) => {
     try {
-      const newStatus = statusUpdate[orderId];
-      await axiosInstance.put(`/admin/orders/${orderId}/status`, {
+      const newStatus = statusUpdate[orderId]?.trim();
+      console.log("Updating Order:", orderId, "with Status:", newStatus);
+
+      const res = await axiosInstance.put(`/admin/orders/${orderId}/status`, {
         status: newStatus,
       });
-      fetchOrders(); // Refresh orders after status update
+
+      toast.success("Order status updated successfully!");
+      fetchOrders();
     } catch (error) {
-      console.error("Failed to update status", error);
+      console.error("Failed to update status", error.response?.data || error);
+      const message = error?.response?.data?.message || "Update failed!";
+      toast.error(message);
     }
   };
 
@@ -64,7 +71,7 @@ const ManageOrders = () => {
               <div className="mb-2">
                 <strong>Status:</strong>{" "}
                 <span className="capitalize text-blue-600 dark:text-blue-400">
-                  {order.status}
+                  {order.orderStatus}
                 </span>
               </div>
 
@@ -73,7 +80,7 @@ const ManageOrders = () => {
                 <ul className="list-disc list-inside ml-4 mt-1">
                   {order.products.map((p, idx) => (
                     <li key={idx}>
-                      {p.product?.name} — ₹{p.product?.price} × {p.quantity}
+                      {p.product?.name || p.name} — ₹{p.product?.price || p.price} × {p.quantity}
                     </li>
                   ))}
                 </ul>
@@ -82,16 +89,17 @@ const ManageOrders = () => {
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mt-4">
                 <select
                   className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white rounded p-2"
-                  value={statusUpdate[order._id] || order.status}
+                  value={statusUpdate[order._id] || order.orderStatus}
                   onChange={(e) =>
                     setStatusUpdate({ ...statusUpdate, [order._id]: e.target.value })
                   }
                 >
-                  <option value="processing">Processing</option>
-                  <option value="shipped">Shipped</option>
-                  <option value="out for delivery">Out for Delivery</option>
-                  <option value="delivered">Delivered</option>
+                  <option value="Processing">Processing</option>
+                  <option value="Shipped">Shipped</option>
+                  <option value="Out for Delivery">Out for Delivery</option>
+                  <option value="Delivered">Delivered</option>
                 </select>
+
                 <button
                   onClick={() => handleStatusChange(order._id)}
                   className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-200"
