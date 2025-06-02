@@ -11,6 +11,7 @@ const ManageOrders = () => {
     try {
       const { data } = await axiosInstance.get("/admin/orders");
       setOrders(data.orders);
+       console.log("Fetched orders:", data.orders);
     } catch (error) {
       console.error("Failed to fetch orders", error);
       toast.error("Failed to load orders.");
@@ -18,36 +19,46 @@ const ManageOrders = () => {
       setLoading(false);
     }
   };
-
   const handleStatusChange = async (orderId) => {
-    try {
-      const newStatus = statusUpdate[orderId]?.trim();
-      console.log("Updating Order:", orderId, "with Status:", newStatus);
+  try {
+    // Use statusUpdate value or fallback to current order status
+    const newStatus =
+      (statusUpdate[orderId] || orders.find((o) => o._id === orderId)?.orderStatus || "")
+        .trim();
 
-      const res = await axiosInstance.put(`/admin/orders/${orderId}/status`, {
-        status: newStatus,
-      });
-
-      toast.success("Order status updated successfully!");
-      fetchOrders();
-    } catch (error) {
-      console.error("Failed to update status", error.response?.data || error);
-      const message = error?.response?.data?.message || "Update failed!";
-      toast.error(message);
+    if (!newStatus) {
+      toast.error("Please select a valid status.");
+      return;
     }
-  };
+
+    console.log("Updating Order:", orderId, "with Status:", newStatus);
+
+    const res = await axiosInstance.put(`/admin/orders/${orderId}/status`, {
+      status: newStatus,
+    });
+
+    toast.success("Order status updated successfully!");
+    fetchOrders();
+  } catch (error) {
+    console.error("Failed to update status", error.response?.data || error);
+    const message = error?.response?.data?.message || "Update failed!";
+    toast.error(message);
+  }
+};
+
+
 
   useEffect(() => {
-    fetchOrders();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="text-center py-10 text-gray-800 dark:text-gray-100">
-        Loading orders...
-      </div>
-    );
+  if (!loading && orders.length > 0) {
+    const initialStatus = {};
+    orders.forEach((order) => {
+      initialStatus[order._id] = order.orderStatus;
+    });
+    setStatusUpdate(initialStatus);
   }
+}, [loading, orders]);
+
+  
 
   return (
     <div className="p-4 max-w-6xl mx-auto text-gray-800 dark:text-gray-100">
@@ -78,11 +89,13 @@ const ManageOrders = () => {
               <div className="mb-2">
                 <strong>Products:</strong>
                 <ul className="list-disc list-inside ml-4 mt-1">
-                  {order.products.map((p, idx) => (
-                    <li key={idx}>
-                      {p.product?.name || p.name} — ₹{p.product?.price || p.price} × {p.quantity}
-                    </li>
-                  ))}
+          {order.products.map((p, idx) => (
+           <li key={idx}>
+          {p.product?.name || p.name} — ₹{p.product?.price || p.price} × {p.quantity}
+        </li>
+         ))}
+
+
                 </ul>
               </div>
 

@@ -273,7 +273,11 @@ export const getOrders = async (req, res, next) => {
   try {
     const orders = await Order.find()
       .populate("userId", "name email") // Populate user details
-      .populate("products.product", "name price image"); // Populate product details
+    
+      .populate({
+    path: "products.product",
+    select: "name price image"
+  });
 
     res.status(200).json({
       success: true,
@@ -313,6 +317,7 @@ export const updateOrderStatus = async (req, res, next) => {
     await order
       .populate("userId", "name email")
       .populate("products.product", "name price image");
+
 
     res.status(200).json({
       success: true,
