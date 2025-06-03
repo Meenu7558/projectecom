@@ -10,7 +10,7 @@ import  cookieParser from 'cookie-parser';
 const app = express();
 const port = 2906;
 app.use(cors({
-     origin:["http://localhost:5173","https://projectecom-client.vercel.app","https://projectecom-client-git-main-meenakshi-p-s-projects.vercel.app/","https://projectecom-client-7t5vnwg4z-meenakshi-p-s-projects.vercel.app/"],
+     origin:["http://localhost:5173","https://projectecom-client.vercel.app","main-meenakshi-p-s-projects.vercel.app/","https://projectecom-client-1o097z77a-meenakshi-p-s-projects.vercel.app","https://projectecom-client-git-main-meenakshi-p-s-projects.vercel.app"],
      methods:["GET","POST","PUT","DELETE","OPTIONS"],
      credentials:true,
 }))
