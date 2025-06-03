@@ -42,7 +42,9 @@ const ManageOrders = () => {
     // Await this call
     const response = await axiosInstance.put(`/admin/orders/${orderId}/status`, {
       status: newStatus,
-    });
+    },
+    { withCredentials: true }
+  );
 
     toast.success("Order status updated successfully!");
 
