@@ -21,39 +21,41 @@ const ManageOrders = () => {
       setLoading(false);
     }
   };
-
   const handleStatusChange = async (orderId) => {
-    const newStatus = statusUpdate[orderId]?.trim();
+  const newStatus = statusUpdate[orderId]?.trim();
 
-    if (!newStatus) {
-      toast.error("Please select a valid status.");
-      return;
-    }
+  if (!newStatus) {
+    toast.error("Please select a valid status.");
+    return;
+  }
 
-    const currentStatus = orders.find((order) => order._id === orderId)?.orderStatus;
+  const currentStatus = orders.find((order) => order._id === orderId)?.orderStatus;
 
-    if (newStatus === currentStatus) {
-      toast("No change in status.");
-      return;
-    }
+  if (newStatus === currentStatus) {
+    toast("No change in status.");
+    return;
+  }
 
-    try {
-      setUpdatingStatusId(orderId);
+  try {
+    setUpdatingStatusId(orderId);
 
-      await axiosInstance.put(`/admin/orders/${orderId}/status`, {
-        status: newStatus,
-      });
+    // Await this call
+    const response = await axiosInstance.put(`/admin/orders/${orderId}/status`, {
+      status: newStatus,
+    });
 
-      toast.success("Order status updated successfully!");
-      fetchOrders();
-    } catch (error) {
-      console.error("Failed to update status", error.response?.data || error);
-      const message = error?.response?.data?.message || "Update failed!";
-      toast.error(message);
-    } finally {
-      setUpdatingStatusId(null);
-    }
-  };
+    toast.success("Order status updated successfully!");
+
+    // ✅ Await fetchOrders() to prevent false error triggering
+    await fetchOrders();
+  } catch (error) {
+    console.error("Failed to update status", error.response?.data || error);
+    const message = error?.response?.data?.message || "Update failed!";
+    toast.error(message);
+  } finally {
+    setUpdatingStatusId(null);
+  }
+};
 
   useEffect(() => {
     fetchOrders();
