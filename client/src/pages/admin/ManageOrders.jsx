@@ -51,13 +51,21 @@ const ManageOrders = () => {
     // ✅ Await fetchOrders() to prevent false error triggering
     await fetchOrders();
   } catch (error) {
-    console.error("Failed to update status", error.response?.data || error);
+  console.error("Failed to update status", error);
+
+  if (error?.response?.status === 401) {
+    toast.error("Unauthorized: Please login again.");
+  } else if (error?.message === "Network Error") {
+    // It may be CORS-related, but the update succeeded
+    toast("Status might be updated, but CORS blocked the success message.");
+    await fetchOrders(); // refresh anyway
+  } else {
     const message = error?.response?.data?.message || "Update failed!";
     toast.error(message);
-  } finally {
-    setUpdatingStatusId(null);
   }
-};
+}
+  }
+
 
   useEffect(() => {
     fetchOrders();
@@ -202,4 +210,3 @@ const ManageOrders = () => {
 };
 
 export default ManageOrders;
-

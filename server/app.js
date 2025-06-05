@@ -15,16 +15,7 @@ app.use(cors({
      credentials:true,
 }))
 
-app.options("*", cors({
-  origin: [
-    "http://localhost:5173",
-    "https://projectecom-client.vercel.app",
-    "https://projectecom-client-git-main-meenakshi-p-s-projects.vercel.app",
-    "https://projectecom-client-82o3sze7w-meenakshi-p-s-projects.vercel.app"
-  ],
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  credentials: true,
-}));
+app.options("*", cors());
 
 app.use(express.json())
 app.use(cookieParser())
