@@ -21,7 +21,8 @@ const ManageOrders = () => {
       setLoading(false);
     }
   };
-  const handleStatusChange = async (orderId) => {
+
+const handleStatusChange = async (orderId) => {
   const newStatus = statusUpdate[orderId]?.trim();
 
   if (!newStatus) {
@@ -39,32 +40,31 @@ const ManageOrders = () => {
   try {
     setUpdatingStatusId(orderId);
 
-    // Await this call
-    const response = await axiosInstance.put(`/admin/orders/${orderId}/status`, {
-      status: newStatus,
-    },
-    { withCredentials: true }
-  );
+    const response = await axiosInstance.put(
+      `/admin/orders/${orderId}/status`,
+      { status: newStatus },
+      { withCredentials: true }
+    );
 
-    toast.success("Order status updated successfully!");
+    console.log("✅ Response from backend:", response.data);
 
-    // ✅ Await fetchOrders() to prevent false error triggering
-    await fetchOrders();
+    if (response?.data?.success) {
+      toast.success("Order status updated successfully!");
+      await fetchOrders();
+      setStatusUpdate((prev) => ({ ...prev, [orderId]: "" }));
+    } else {
+      toast.error(response?.data?.message || "Status update failed!");
+    }
   } catch (error) {
-  console.error("Failed to update status", error);
-
-  if (error?.response?.status === 401) {
-    toast.error("Unauthorized: Please login again.");
-  } else if (error?.message === "Network Error") {
-    // It may be CORS-related, but the update succeeded
-    toast("Status might be updated, but CORS blocked the success message.");
-    await fetchOrders(); // refresh anyway
-  } else {
+    console.error("❌ Error during status update:", error);
     const message = error?.response?.data?.message || "Update failed!";
     toast.error(message);
+  } finally {
+    setUpdatingStatusId(null);
   }
-}
-  }
+};
+
+  
 
 
   useEffect(() => {
@@ -113,7 +113,21 @@ const ManageOrders = () => {
                     const name = product?.name || p.name || "Unnamed Product";
                     const price = product?.price || p.price || "N/A";
                     const quantity = p.quantity ?? "N/A";
-                    const image = product?.image || p.image;
+             
+
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+
+const rawImage = p.image;
+
+let image = null;
+if (typeof rawImage === "string") {
+  image = rawImage.startsWith("http")
+    ? rawImage
+    : `${BASE_URL}/${rawImage.replace(/^\/+/, "")}`;
+}
+
+
+
 
                     return (
                       <div

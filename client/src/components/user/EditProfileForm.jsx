@@ -14,7 +14,7 @@ export const EditProfileForm = ({ setisProfileEdit, initialProfileData }) => {
     defaultValues: {
       name: initialProfileData?.name || "",
       email: initialProfileData?.email || "",
-      mobile: initialProfileData?.mobile || "",
+      
     },
   });
 
@@ -124,27 +124,7 @@ export const EditProfileForm = ({ setisProfileEdit, initialProfileData }) => {
           )}
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Mobile
-          </label>
-          <input
-            type="tel"
-            {...register("mobile", {
-              pattern: {
-                value: /^[0-9]{10,15}$/,
-                message: "Enter a valid mobile number",
-              },
-            })}
-            placeholder="Enter your mobile number"
-            className={`input input-bordered w-full mt-1 bg-white dark:bg-gray-900 text-gray-900 dark:text-white ${
-              errors.mobile ? "border-red-500" : ""
-            }`}
-          />
-          {errors.mobile && (
-            <p className="text-red-500 text-sm mt-1">{errors.mobile.message}</p>
-          )}
-        </div>
+        
 
         <button
           type="submit"
