@@ -314,15 +314,15 @@ export const updateOrderStatus = async (req, res, next) => {
     order.orderStatus = matchedStatus;
     await order.save();
 
-    await order
-      .populate("userId", "name email")
-      .populate("products.product", "name price image");
+    // await order
+    //   .populate("userId", "name email")
+    //   .populate("products.product", "name price image");
 
 
     res.status(200).json({
       success: true,
       message: "Order status updated",
-      order,
+      // order,
     });
   } catch (err) {
     next(new ErrorResponse("Failed to update order", 500));
